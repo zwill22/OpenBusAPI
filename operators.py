@@ -1,5 +1,5 @@
 import sqlite3
-from tools import apiOutput
+from tools.output import apiOutput
 
 sqlite3.connect("bus_operators.db")
 
