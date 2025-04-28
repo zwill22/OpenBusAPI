@@ -1,8 +1,23 @@
-import requests
-
 from flask import Flask
+from flask_cors import CORS
+from tools import apiOutput
 
 app = Flask(__name__)
+CORS(app)
+class APIKey:
+    def __init__(self, api_file="api_key"):
+        api_key = ""
+    
+        with open(api_file, "r") as f:
+            api_key += f.read()
+
+        self._api_key_ = api_key.strip()
+
+    def getAPIKey(self):
+        return "api_key=" + self._api_key_
+    
+api_key = APIKey()
+
 
 @app.route("/")
 def index():
@@ -10,11 +25,7 @@ def index():
 
 
 def apiKey():
-    api_key = "api_key="
-    with open("api_key", "r") as f:
-        api_key += f.read()
-
-    return api_key.strip()
+    return api_key.getAPIKey()
 
 
 def boundingBox(latitude: tuple[float, float], longitude: tuple[float, float]):
@@ -42,10 +53,16 @@ def boundingBox(latitude: tuple[float, float], longitude: tuple[float, float]):
     return output_string
 
 
-def getLocationURL(min_latitude, min_longitude, max_latitude, max_longitude):
+def getBaseURL():
     feed_url = "https://data.bus-data.dft.gov.uk/api/v1/datafeed?"
 
     feed_url += apiKey()
+
+    return feed_url
+
+
+def getLocationURL(min_latitude, min_longitude, max_latitude, max_longitude):
+    feed_url = getBaseURL()
 
     latitude = (float(min_latitude), float(max_latitude))
     longitude = (float(min_longitude), float(max_longitude))
@@ -54,21 +71,21 @@ def getLocationURL(min_latitude, min_longitude, max_latitude, max_longitude):
 
     return feed_url
 
-def apiOutput(feed_url: str):
-    try:
-        r = requests.get(feed_url)
-    except requests.exceptions.ConnectionError:
-        raise RuntimeError("Unable to establish internet connection")
-    
-    if r.status_code != 200:
-        raise RuntimeError("Unable to access output")
-    
-    return r.content
 
-
-@app.route("/location/<min_latitude>/<min_longitude>/<max_latitude>/<max_longitude>")
+@app.route("/location/area/<min_latitude>/<min_longitude>/<max_latitude>/<max_longitude>")
 def getLocationData(min_latitude, min_longitude, max_latitude, max_longitude):
     feed_url = getLocationURL(min_latitude, min_longitude, max_latitude, max_longitude)
 
     return apiOutput(feed_url)
 
+
+@app.route("/location/vehicle/<vehicle_id>")
+def getVehicleLocationData(vehicle_id):
+    feed_url = getBaseURL()
+
+    feed_url += "&vehicleRef=" + vehicle_id
+
+    return apiOutput(feed_url)
+
+if __name__ == "__main__":
+    app.run()
