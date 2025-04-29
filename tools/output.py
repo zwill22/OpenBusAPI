@@ -1,5 +1,6 @@
 import requests
 
+
 def apiOutput(feed_url: str):
     try:
         r = requests.get(feed_url)

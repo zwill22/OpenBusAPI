@@ -43,9 +43,9 @@ def request_token(secret: str) -> dict[str, str]:
         "grant_type": "client_credentials",
         "client_id": client_id,
         "client_secret": secret,
-        "scope": "default-m2m-resource-server-tuzcmo/read"
+        "scope": "default-m2m-resource-server-tuzcmo/read",
     }
-    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
     response = requests.post(token_url, data=to_string(data), headers=headers)
 
@@ -60,7 +60,9 @@ def request_token(secret: str) -> dict[str, str]:
     return content
 
 
-def get_headers(access_token: str = None, token_type: str = None, **kwargs) -> dict[str, str]:
+def get_headers(
+    access_token: str = None, token_type: str = None, **kwargs
+) -> dict[str, str]:
     """
     Create the headers dictionary for `requests.get`.
 
@@ -82,7 +84,7 @@ def access_api(token: dict[str, str], verbose=True, **kwargs) -> str:
     :return: API response as a string
     """
     headers = get_headers(**token)
-    print("Requesting response from api...", end='')
+    print("Requesting response from api...", end="")
     t0 = time.time()
     try:
         response = requests.get(api_url, headers=headers)
@@ -97,7 +99,7 @@ def access_api(token: dict[str, str], verbose=True, **kwargs) -> str:
         raise SystemExit(e)
 
     t1 = time.time()
-    print("Response retrieved, time: {:.2f}s\n".format(t1-t0))
+    print("Response retrieved, time: {:.2f}s\n".format(t1 - t0))
 
     return response.content.decode()
 
@@ -109,7 +111,7 @@ def save_token(token: dict[str, str], filename):
     :param token: Token in JSON (dictionary) format
     :param filename: Name of file to save token to.
     """
-    with open(filename, 'w') as file:
+    with open(filename, "w") as file:
         json.dump(token, file)
 
 
@@ -121,8 +123,7 @@ def load_token(filename: str) -> dict[str, str]:
 
     :return: JSON token
     """
-    with open(filename, 'r') as file:
-
+    with open(filename, "r") as file:
         json_object = json.load(file)
 
     return json_object
@@ -148,11 +149,11 @@ def find_token(secret=None, token_file=None, **kwargs) -> dict[str, str]:
         print("Retrieving token file: {}".format(token_file))
         return load_token(token_file)
     except FileNotFoundError:
-        print("File not found, requesting token...", end='')
+        print("File not found, requesting token...", end="")
         t0 = time.time()
         token = request_token(secret)
         t1 = time.time()
-        print("Token retrieved, time: {}s".format(t1-t0))
+        print("Token retrieved, time: {}s".format(t1 - t0))
         print("Saving token to file: {}".format(token_file))
         save_token(token, token_file)
         return token
@@ -177,7 +178,7 @@ def get_token(**kwargs) -> dict[str, str]:
 
 
 def save_xml(xml: str):
-    with open("api_response.xml", 'w') as file:
+    with open("api_response.xml", "w") as file:
         file.write(xml)
 
 
@@ -188,12 +189,21 @@ def main(**kwargs):
     analyse_response(api_response)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--secret", type=str, help="The client secret (for authorisation).")
-    parser.add_argument("--token_file", type=str, help="File containing the JWT token", default="token.json")
-    parser.add_argument("-v", "--verbose", help="Increase output verbosity", action="store_true")
+    parser.add_argument(
+        "--secret", type=str, help="The client secret (for authorisation)."
+    )
+    parser.add_argument(
+        "--token_file",
+        type=str,
+        help="File containing the JWT token",
+        default="token.json",
+    )
+    parser.add_argument(
+        "-v", "--verbose", help="Increase output verbosity", action="store_true"
+    )
 
     main(**vars(parser.parse_args()))

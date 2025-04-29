@@ -9,7 +9,7 @@ admin_fields = (
     "ResponseTimestamp",
     "RequestMessageRef",
     "ValidUntil",
-    "ShortestPossibleCycle"
+    "ShortestPossibleCycle",
 )
 
 
@@ -22,7 +22,7 @@ def generate_structure(tree: ElementTree, structure: dict):
     :param structure: Dictionary containing
     :return:
     """
-    tag = re.sub(r'{.+}', r'', tree.tag)
+    tag = re.sub(r"{.+}", r"", tree.tag)
 
     if tag not in structure:
         structure[tag] = {"count": 1}
@@ -31,6 +31,7 @@ def generate_structure(tree: ElementTree, structure: dict):
 
     for child in tree:
         generate_structure(child, structure[tag])
+
 
 def get_structure(tree: ElementTree) -> dict:
     """
@@ -46,21 +47,25 @@ def get_structure(tree: ElementTree) -> dict:
     return structure
 
 
-def print_structure(tree: dict, depth: int = 0):
+def print_structure(tree: dict, depth: int = 0, max_depth=100):
     """
     Function which prints a tree structure recursively.
 
     :param tree: Multi-layer dictionary (tree-structure)
     :param depth: Level of recursion
+    :param max_depth: Maximum recursion level
     """
-    tab = depth * '\t'
+    tab = depth * "\t"
     depth += 1
+    if depth > max_depth:
+        depth -= 1
+        return
     for k in tree.keys():
         if k == "count":
             continue
         try:
             print(tab, k, tree[k]["count"])
-            print_structure(tree[k], depth=depth)
+            print_structure(tree[k], depth=depth, max_depth=max_depth)
         except AttributeError:
             pass
     depth -= 1
@@ -104,7 +109,10 @@ def count_fields(structure: dict) -> dict[str, int]:
 
     return result
 
-def sort_string(response_string: str = None, verbose: bool = False, **kwargs) -> dict[str, int]:
+
+def sort_string(
+    response_string: str = None, verbose: bool = False, **kwargs
+) -> dict[str, int]:
     """
     Sort an XML string into an element tree, obtain the structure of the tree and then sort this into a single
     dictionary counting the number of occurrences of each node.
@@ -142,7 +150,9 @@ def analyse_result(result: dict[str, int]):
         elif field in admin_fields:
             assert count > 0
             if count != 1:
-                raise ValueError("Multiple entries ({0}) for field {1}".format(count, field))
+                raise ValueError(
+                    "Multiple entries ({0}) for field {1}".format(count, field)
+                )
         elif field == "VehicleActivity":
             n_vehicles = count
             print("Result contains data on {} buses".format(n_vehicles))
@@ -151,7 +161,9 @@ def analyse_result(result: dict[str, int]):
             if count < n_vehicles:
                 print("Only {0:2d} results for field {1}".format(count, field))
             elif count > n_vehicles:
-                raise ValueError("Too many results for field {0}: {1}".format(field, count))
+                raise ValueError(
+                    "Too many results for field {0}: {1}".format(field, count)
+                )
 
 
 def analyse_response(**kwargs):
@@ -170,7 +182,7 @@ def load_file(filename: str) -> str:
     :param filename: File to load
     :return: File contents as string
     """
-    with open(filename, 'r') as f:
+    with open(filename, "r") as f:
         content = f.read()
 
     return content
@@ -187,11 +199,13 @@ def main(file: str = None, **kwargs):
     analyse_response(response_string, **kwargs)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
     parser.add_argument("file", type=str, help="File containing api response")
-    parser.add_argument("-v", "--verbose", help="Increase output verbosity", action="store_true")
+    parser.add_argument(
+        "-v", "--verbose", help="Increase output verbosity", action="store_true"
+    )
 
     main(**vars(parser.parse_args()))

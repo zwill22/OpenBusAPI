@@ -4,10 +4,12 @@ from tools.output import apiOutput
 
 app = Flask(__name__)
 CORS(app)
+
+
 class APIKey:
     def __init__(self, api_file="api_key"):
         api_key = ""
-    
+
         with open(api_file, "r") as f:
             api_key += f.read()
 
@@ -15,7 +17,8 @@ class APIKey:
 
     def getAPIKey(self):
         return "api_key=" + self._api_key_
-    
+
+
 api_key = APIKey()
 
 
@@ -36,12 +39,12 @@ def boundingBox(latitude: tuple[float, float], longitude: tuple[float, float]):
     Bounding Box:   Limit results to bus location data with vehicle position
                     within the rectangular bounding box you set using co-ordinates:
                     minLongitude, minLatitude, maxLongitude, maxLatitude.
-    
+
     Args:
         latitude (tuple[float, float]): The minimum and maxium latitudes of the box
         longitude (tuple[float, float]): The minimum and maxium longitudes of the box
 
-    
+
     """
     output_string = "&boundingBox="
 
@@ -72,9 +75,12 @@ def getLocationURL(min_latitude, min_longitude, max_latitude, max_longitude):
     return feed_url
 
 
-@app.route("/location/area/<min_latitude>/<min_longitude>/<max_latitude>/<max_longitude>")
+@app.route(
+    "/location/area/<min_latitude>/<min_longitude>/<max_latitude>/<max_longitude>"
+)
 def getLocationData(min_latitude, min_longitude, max_latitude, max_longitude):
     feed_url = getLocationURL(min_latitude, min_longitude, max_latitude, max_longitude)
+    print(feed_url)
 
     return apiOutput(feed_url)
 
@@ -86,6 +92,7 @@ def getVehicleLocationData(vehicle_id):
     feed_url += "&vehicleRef=" + vehicle_id
 
     return apiOutput(feed_url)
+
 
 if __name__ == "__main__":
     app.run()
