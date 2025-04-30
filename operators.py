@@ -5,7 +5,7 @@ from xml.etree import ElementTree
 from tools.output import apiOutput
 
 
-def get_data(tree: ElementTree.Element):
+def get_record(tree: ElementTree.Element):
     data = {}
     for branch in tree:
         data[branch.tag] = branch.text
@@ -13,45 +13,51 @@ def get_data(tree: ElementTree.Element):
     return data
 
 
-def noc_data(tree: ElementTree.Element):
-    noc_table = tree.find("NOCTable")
+def get_data(tree: ElementTree.Element):
+    tag = tree.tag
+
     operators = []
-    for record in noc_table.findall("NOCTableRecord"):
-        record_data = get_data(record)
+    for record in tree.findall(tag + "Record"):
+        record_data = get_record(record)
         operators.append(record_data)
 
     return pd.DataFrame(operators)
 
 
-def setup_noc_table(root: ElementTree.Element, conn: sqlite3.Connection):
-    df = noc_data(root)
+def setup_table(tree: ElementTree.Element, conn: sqlite3.Connection):
+    df = get_data(tree)
     df = df.dropna(how="all", axis=1)
-    df = df.drop(columns=["ChangeDate", "ChangeAgent", "ChangeComment"])
-    df.to_sql("noc_table", conn, if_exists="replace", index=False)
+    drop_columns = ["ChangeDate", "ChangeAgent", "ChangeComment"]
+    df = df.drop(columns=[x for x in drop_columns if x in df.columns])
+    df.to_sql(tree.tag, conn, if_exists="replace", index=False)
 
 
 def initialise_db(conn: sqlite3.Connection, url: str, encoding: str):
     output = apiOutput(url)
     root = ElementTree.fromstring(output.decode(encoding))
 
-    setup_noc_table(root, conn)
+    for tree in root:
+        setup_table(tree, conn)
 
 
-def main():
+def setup_database(
+    reinitialise=False,
+    url="https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml",
+    encoding="windows-1252",
+    db="operators.db",
+) -> sqlite3.Connection:
     db_exists = False
-    reinitialise = True
-    db = "bus_operators.db"
 
     if os.path.isfile(db):
         db_exists = True
 
     conn = sqlite3.connect(db)
-    url = "https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml"
-    encoding = "windows-1252"
 
     if not db_exists or reinitialise:
         initialise_db(conn, url, encoding)
 
+    return conn
+
 
 if __name__ == "__main__":
-    main()
+    setup_database()

@@ -4,3 +4,5 @@ uv.lock
 api_key
 *.db
 .idea/
+nocrecords.xml
+bus_operators.db
