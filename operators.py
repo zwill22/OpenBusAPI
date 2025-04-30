@@ -41,10 +41,10 @@ def initialise_db(conn: sqlite3.Connection, url: str, encoding: str):
 
 
 def setup_database(
-    reinitialise=False,
-    url="https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml",
-    encoding="windows-1252",
-    db="operators.db",
+        reinitialise=False,
+        url="https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml",
+        encoding="windows-1252",
+        db="operators.db"
 ) -> sqlite3.Connection:
     db_exists = False
 
@@ -60,4 +60,5 @@ def setup_database(
 
 
 if __name__ == "__main__":
-    setup_database()
+    conn = setup_database(reinitialise=True)
+    conn.close()
