@@ -6,3 +6,4 @@ api_key
 .idea/
 nocrecords.xml
 bus_operators.db
+operators.db

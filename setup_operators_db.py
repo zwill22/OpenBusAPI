@@ -5,7 +5,7 @@ from xml.etree import ElementTree
 from tools.output import apiOutput
 
 
-def get_record(tree: ElementTree.Element):
+def get_record(tree: ElementTree.Element) -> dict:
     data = {}
     for branch in tree:
         data[branch.tag] = branch.text
@@ -13,7 +13,7 @@ def get_record(tree: ElementTree.Element):
     return data
 
 
-def get_data(tree: ElementTree.Element):
+def get_data(tree: ElementTree.Element) -> pd.DataFrame:
     tag = tree.tag
 
     operators = []
@@ -60,5 +60,5 @@ def setup_database(
 
 
 if __name__ == "__main__":
-    conn = setup_database(reinitialise=True)
-    conn.close()
+    connection = setup_database(reinitialise=True)
+    connection.close()
