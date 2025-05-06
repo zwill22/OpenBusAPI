@@ -1,18 +1,11 @@
 from flask import Flask, render_template
 from flask_cors import CORS
 
-import setup_operators_db
-from fetch_operators_data import operators_data, operators_info
-from tools.output import apiOutput
-from tools.location_tools import getLocationURL, getBaseURL
+from tools import apiOutput, getLocationURL, getBaseURL
+from operators import setup_database, operators_data, operators_info
 
 app = Flask(__name__)
 CORS(app)
-
-
-def setup_database():
-    return setup_operators_db.setup_database()
-
 
 @app.route("/")
 def index():

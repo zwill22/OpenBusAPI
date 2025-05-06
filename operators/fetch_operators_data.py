@@ -1,8 +1,10 @@
+import os.path
 import sqlite3
 import polars as pl
 
+sql_path = os.path.join("operators", "operators.sql")
+
 def operators_data(conn: sqlite3.Connection) -> str:
-    sql_path = "operators.sql"
     with open(sql_path, 'r') as f:
         sql_query = f.read()
     df = pl.read_database(query=sql_query, connection=conn, infer_schema_length=None)
@@ -11,7 +13,6 @@ def operators_data(conn: sqlite3.Connection) -> str:
 
 
 def operators_info(conn: sqlite3.Connection) -> list:
-    sql_path = "operators.sql"
     with open(sql_path, 'r') as f:
         sql_query = f.read()
     df = pl.read_database(query=sql_query, connection=conn, infer_schema_length=None)
@@ -21,9 +22,9 @@ def operators_info(conn: sqlite3.Connection) -> list:
 
 if __name__ == "__main__":
     from io import StringIO
-    from setup_operators_db import setup_database
-    conn = setup_database()
-    json = operators_data(conn)
+    from .setup_operators_db import setup_database
+    connection = setup_database()
+    json = operators_data(connection)
 
     out_df = pl.read_json(StringIO(json))
 
