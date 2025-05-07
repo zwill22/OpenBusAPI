@@ -1,25 +1,25 @@
 class APIKey:
     def __init__(self, api_file="api_key"):
-        api_key = ""
+        _api_key = ""
 
         with open(api_file, "r") as f:
-            api_key += f.read()
+            _api_key += f.read()
 
-        self._api_key_ = api_key.strip()
+        self._api_key_ = _api_key.strip()
 
-    def getAPIKey(self):
+    def get_key(self):
         return "api_key=" + self._api_key_
 
 
 api_key = APIKey()
 
 
-def apiKey():
+def get_api_key():
     global api_key
-    return api_key.getAPIKey()
+    return api_key.get_key()
 
 
-def boundingBox(latitude: tuple[float, float], longitude: tuple[float, float]):
+def bounding_box(latitude: tuple[float, float], longitude: tuple[float, float]):
     """
     Convert longitude and latitude to a string formatted as:
     "boundingBox={longitude[0]},{latitude[0]},{longitude[1]},{latitude[1]}"
@@ -44,20 +44,20 @@ def boundingBox(latitude: tuple[float, float], longitude: tuple[float, float]):
     return output_string
 
 
-def getBaseURL():
+def get_base_url():
     feed_url = "https://data.bus-data.dft.gov.uk/api/v1/datafeed?"
 
-    feed_url += apiKey()
+    feed_url += get_api_key()
 
     return feed_url
 
 
-def getLocationURL(min_latitude, min_longitude, max_latitude, max_longitude):
-    feed_url = getBaseURL()
+def get_location_url(min_latitude, min_longitude, max_latitude, max_longitude):
+    feed_url = get_base_url()
 
     latitude = (float(min_latitude), float(max_latitude))
     longitude = (float(min_longitude), float(max_longitude))
 
-    feed_url += boundingBox(latitude, longitude)
+    feed_url += bounding_box(latitude, longitude)
 
     return feed_url

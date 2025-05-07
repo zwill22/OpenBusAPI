@@ -1,8 +1,10 @@
 import os.path
 import sqlite3
+import sys
+
 import pandas as pd
 from xml.etree import ElementTree
-from tools import apiOutput
+from tools import api_output
 
 
 def get_record(tree: ElementTree.Element) -> dict:
@@ -33,8 +35,15 @@ def setup_table(tree: ElementTree.Element, conn: sqlite3.Connection):
 
 
 def initialise_db(conn: sqlite3.Connection, url: str, encoding: str):
-    output = apiOutput(url)
-    root = ElementTree.fromstring(output.decode(encoding))
+    try:
+        output = api_output(url)
+    except LookupError as e:
+        raise
+    root = None
+    try:
+        root = ElementTree.fromstring(output.decode(encoding))
+    except ElementTree.ParseError:
+        print("Unable to parse XML", file=sys.stderr)
 
     for tree in root:
         setup_table(tree, conn)

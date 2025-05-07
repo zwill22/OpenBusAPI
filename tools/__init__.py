@@ -1,2 +1,2 @@
-from .output import apiOutput
-from .location_tools import getLocationURL, getBaseURL
+from .output import api_output
+from .location_tools import get_location_url, get_base_url
