@@ -1,48 +1,34 @@
-from flask import render_template, abort
+from flask import Flask
+from flask_cors import CORS
 
-from tools import get_location_url, api_output, get_base_url
-from operators import setup_database, fetch_operators_data, operators_info
+from functions import fetch_index, location_data, vehicle_location_data, operators_data, operators_info_list, reinitialise_database
 
-def reinitialise_database():
-    print("Reinitialising database")
-    setup_database(reinitialise=True)
-    print("Database reinitialised complete")
+app = Flask("OpenBusAPI")
+CORS(app)
 
+# Reinitialise database on startup
+reinitialise_database()
 
-def fetch_index():
-    return render_template("index.html")
+@app.route("/")
+def index():
+    return fetch_index()
 
-def fetch_api_output():
-    try:
-        return api_output()
-    except LookupError as e:
-        abort(int(str(e)))
-
-
-def location_data(min_lat, min_long, max_lat, max_long):
-    feed_url = get_location_url(min_lat, min_long, max_lat, max_long)
-
-    return api_output(feed_url)
+@app.route("/location/area/<min_lat>/<min_long>/<max_lat>/<max_long>")
+def get_location_data(min_lat, min_long, max_lat, max_long):
+    return location_data(min_lat, min_long, max_lat, max_long)
 
 
-def vehicle_location_data(vehicle_id):
-    feed_url = get_base_url()
+@app.route("/location/vehicle/<vehicle_id>")
+def get_vehicle_location_data(vehicle_id):
+    return vehicle_location_data(vehicle_id)
 
-    feed_url += "&vehicleRef=" + vehicle_id
+@app.route("/operators/data")
+def get_operators_data():
+    return operators_data()
 
-    return api_output(feed_url)
+@app.route("/operators/info/list")
+def get_operators_info_list():
+    return operators_info_list()
 
-
-def operators_data():
-    conn = setup_database()
-    try:
-        return fetch_operators_data(conn)
-    except FileNotFoundError:
-        abort(404)
-
-
-def operators_info_list():
-    template_name = "operators_data.html"
-    conn = setup_database()
-    return render_template(template_name, columns=operators_info(conn))
-
+if __name__ == "__main__":
+    app.run(host="localhost", port=5134)
