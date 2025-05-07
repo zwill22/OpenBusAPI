@@ -28,11 +28,14 @@ classifiers = [
     "Programming Language :: Python :: 3.13"
 ]
 
-[project.optional-dependencies]
+[tool.flit.module]
+name = "app"
+
+[dependency-groups]
 dev = [
-    "pytest",
-    "coverage",
-    "ruff"
+    "pytest>=8.3.5",
+    "coverage>=7.8.0",
+    "ruff>=0.11.8"
 ]
 
 [tool.pytest.ini_options]
@@ -41,6 +44,9 @@ addopts = "-ra -q -v"
 testpaths = [
     "tests"
 ]
+
+[tool.uv]
+default-groups = ["dev"]
 
 [tool.ruff]
 line-length = 88

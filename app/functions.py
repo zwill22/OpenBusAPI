@@ -3,6 +3,7 @@ from flask import render_template, abort
 from tools import get_location_url, api_output, get_base_url
 from operators import setup_database, fetch_operators_data, operators_info
 
+
 def reinitialise_database():
     print("Reinitialising database")
     setup_database(reinitialise=True)
@@ -11,6 +12,7 @@ def reinitialise_database():
 
 def fetch_index():
     return render_template("index.html")
+
 
 def fetch_api_output():
     try:
@@ -45,4 +47,3 @@ def operators_info_list():
     template_name = "operators_data.html"
     conn = setup_database()
     return render_template(template_name, columns=operators_info(conn))
-

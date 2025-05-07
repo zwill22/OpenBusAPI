@@ -6,7 +6,7 @@ sql_path = os.path.join("operators", "operators.sql")
 
 
 def fetch_operators_data(conn: sqlite3.Connection) -> str:
-    with open(sql_path, 'r') as f:
+    with open(sql_path, "r") as f:
         sql_query = f.read()
     df = pl.read_database(query=sql_query, connection=conn, infer_schema_length=None)
 
@@ -14,7 +14,7 @@ def fetch_operators_data(conn: sqlite3.Connection) -> str:
 
 
 def operators_info(conn: sqlite3.Connection) -> list:
-    with open(sql_path, 'r') as f:
+    with open(sql_path, "r") as f:
         sql_query = f.read()
     df = pl.read_database(query=sql_query, connection=conn, infer_schema_length=None)
 
@@ -24,6 +24,7 @@ def operators_info(conn: sqlite3.Connection) -> list:
 if __name__ == "__main__":
     from io import StringIO
     from .initialise_database import setup_database
+
     connection = setup_database()
     json = fetch_operators_data(connection)
 
@@ -35,5 +36,5 @@ if __name__ == "__main__":
     print("Columns:")
     for column in out_df.columns:
         print(column)
-    for mode in (out_df.get_column("Mode").unique()):
+    for mode in out_df.get_column("Mode").unique():
         print(mode)
