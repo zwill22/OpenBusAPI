@@ -30,14 +30,4 @@ if __name__ == "__main__":
 
     out_df = pl.read_json(StringIO(json))
 
-    shape = out_df.shape
-    print("Number of rows = {}".format(shape[0]))
-    print("Number of columns = {}".format(shape[1]))
-    print()
-    print("Columns:")
-    for column in out_df.columns:
-        print(column)
-    print()
-    print("Modes:")
-    for mode in out_df.get_column("Mode").unique():
-        print(mode)
+    print(out_df.head())

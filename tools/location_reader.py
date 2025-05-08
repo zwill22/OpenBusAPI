@@ -1,18 +1,7 @@
 import re
 from xml.etree import ElementTree
 
-from tools.xml_tools import validate_xml, fetch_schema
-
-admin_fields = (
-    "ServiceDelivery",
-    "ResponseTimestamp",
-    "ProducerRef",
-    "VehicleMonitoringDelivery",
-    "ResponseTimestamp",
-    "RequestMessageRef",
-    "ValidUntil",
-    "ShortestPossibleCycle",
-)
+from tools.xml_tools import validate_xml
 
 
 def generate_structure(tree: ElementTree, structure: dict):
@@ -60,17 +49,11 @@ def field_count(structure: dict, result: dict[str, int]):
     for k in structure.keys():
         if k == "count":
             continue
-        try:
-            count = structure[k]["count"]
-        except AttributeError:
-            continue
+
+        count = structure[k]["count"]
+
         if k not in result.keys():
             result[k] = count
-        elif k == "ResponseTimestamp":
-            if result[k] != 1 or count != 1:
-                raise ValueError("Multiple response timestamps")
-        else:
-            raise ValueError("Repeated values in result: {}".format(k))
         field_count(structure[k], result)
 
 
@@ -97,8 +80,9 @@ def analyse_response(response_string: str, **kwargs) -> dict[str, int]:
 
     :return: Dictionary counting occurrences of each key in `response_string`
     """
-
-    validate_xml(response_string, **kwargs)
+    valid = validate_xml(response_string, **kwargs)
+    if not valid:
+        raise ValueError("XML is not valid")
     root = ElementTree.fromstring(response_string)
 
     structure = get_structure(root)

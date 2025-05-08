@@ -35,15 +35,8 @@ def setup_table(tree: ElementTree.Element, conn: sqlite3.Connection):
 
 
 def initialise_db(conn: sqlite3.Connection, url: str, encoding: str):
-    try:
-        output = api_output(url)
-    except LookupError as e:
-        raise
-    root = None
-    try:
-        root = ElementTree.fromstring(output.decode(encoding))
-    except ElementTree.ParseError:
-        print("Unable to parse XML", file=sys.stderr)
+    output = api_output(url)
+    root = ElementTree.fromstring(output.decode(encoding))
 
     for tree in root:
         setup_table(tree, conn)

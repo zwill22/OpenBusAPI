@@ -126,7 +126,7 @@ def test_operator_data():
     output = response.data.decode()
 
     output_df = pl.read_json(StringIO(output))
-    print(output_df)
+
     shape = output_df.shape
     assert shape[1] == 9
     n = shape[0]
@@ -146,6 +146,6 @@ def test_operator_info():
     assert response.status_code == 200
     output = response.data.decode()
     soup = BeautifulSoup(output)
-    print(output)
+
     for item in soup.find("li"):
         assert item.text in expected_columns
