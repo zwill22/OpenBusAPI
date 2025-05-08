@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 from io import StringIO
 from open_bus_api.api import app as open_bus_api
-from tools.location_reader import analyse_response, check_result
+from tools.location_reader import analyse_response
 
 
 def test_index():
@@ -56,29 +56,29 @@ empty_keys = (
 
 
 @pytest.mark.parametrize("path, output", cases)
-def test_area_data(path, output):
+def test_area_data(path, output, schema):
     response = open_bus_api.test_client().get(path)
     assert response.status_code == output
     if output == 200:
         output = response.data.decode()
-        result = analyse_response(response_string=output)
+        result = analyse_response(output, schema=schema)
         for key, value in result.items():
             assert key in empty_keys
             assert value == 1
-        check_result(result)
 
 
 real_data = [
     ("/location/area/53.0/-3.1/53.1/-3", 200, 0),
-    ("/location/vehicle/1701", 200, 1)
+    ("/location/vehicle/1701", 200, 1),
 ]
 
+
 @pytest.mark.parametrize("path, output, n", real_data)
-def test_real_area_data(path, output, n):
+def test_real_area_data(path, output, n, schema):
     response = open_bus_api.test_client().get(path)
     assert response.status_code == output
     output = response.data.decode()
-    result = analyse_response(response_string=output)
+    result = analyse_response(output, schema=schema)
     for key, value in result.items():
         if key in empty_keys:
             assert value == 1
@@ -86,7 +86,6 @@ def test_real_area_data(path, output, n):
             assert value > 0
         else:
             assert value == n
-        check_result(result)
 
 
 expected_columns = (
@@ -98,7 +97,7 @@ expected_columns = (
     "FareEnq",
     "ComplEnq",
     "Twitter",
-    "Website"
+    "Website",
 )
 
 transport_modes = (
@@ -117,8 +116,9 @@ transport_modes = (
     "Permit",
     "Cable Car",
     "Taxi",
-    "Rail"
+    "Rail",
 )
+
 
 def test_operator_data():
     response = open_bus_api.test_client().get("/operators/data")

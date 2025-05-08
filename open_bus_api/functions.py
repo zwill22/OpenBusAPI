@@ -14,13 +14,6 @@ def fetch_index():
     return render_template("index.html")
 
 
-def fetch_api_output():
-    try:
-        return api_output()
-    except LookupError as e:
-        abort(int(str(e)))
-
-
 def location_data(min_lat, min_long, max_lat, max_long):
     feed_url = get_location_url(min_lat, min_long, max_lat, max_long)
 
@@ -37,10 +30,7 @@ def vehicle_location_data(vehicle_id):
 
 def operators_data():
     conn = setup_database()
-    try:
-        return fetch_operators_data(conn)
-    except FileNotFoundError:
-        abort(404)
+    return fetch_operators_data(conn)
 
 
 def operators_info_list():

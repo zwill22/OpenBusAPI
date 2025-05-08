@@ -8,3 +8,4 @@ nocrecords.xml
 bus_operators.db
 operators.db
 .coverage
+schemas/

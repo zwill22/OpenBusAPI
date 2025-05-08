@@ -41,4 +41,3 @@ if __name__ == "__main__":
     print("Modes:")
     for mode in out_df.get_column("Mode").unique():
         print(mode)
-
