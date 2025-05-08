@@ -23,7 +23,7 @@ def operators_info(conn: sqlite3.Connection) -> list:
 
 if __name__ == "__main__":
     from io import StringIO
-    from .initialise_database import setup_database
+    from operators.initialise_database import setup_database
 
     connection = setup_database()
     json = fetch_operators_data(connection)
@@ -33,8 +33,12 @@ if __name__ == "__main__":
     shape = out_df.shape
     print("Number of rows = {}".format(shape[0]))
     print("Number of columns = {}".format(shape[1]))
+    print()
     print("Columns:")
     for column in out_df.columns:
         print(column)
+    print()
+    print("Modes:")
     for mode in out_df.get_column("Mode").unique():
         print(mode)
+
