@@ -8,8 +8,8 @@ on:
 
 jobs:
   build:
-
     runs-on: ${{matrix.os}}
+    environment: "OpenBusEnvironment"
     strategy:
       fail-fast: false
       matrix:
@@ -35,12 +35,16 @@ jobs:
       run: uv sync --dev
 
     - name: Run tests
+      env:
+        OPEN_BUS_API_KEY: ${{secrets.OPEN_BUS_API_KEY}}
       run: uv run --frozen pytest
 
     - name: Lint with ruff
       run: uv run ruff check
 
     - name: Get Coverage
+      env:
+        OPEN_BUS_API_KEY: ${{secrets.OPEN_BUS_API_KEY}}
       run: |
         coverage run -m pytest
         coverage xml
