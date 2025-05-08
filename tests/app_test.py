@@ -16,9 +16,9 @@ def test_index():
         template = index_file.readlines()
 
     index_output = response.data.splitlines()
-    l = len(index_output)
-    assert l == len(template)
-    for i in range(l):
+    index_length = len(index_output)
+    assert len(template) == index_length
+    for i in range(index_length):
         template_line = template[i].strip()
         index_line = index_output[i].decode().strip()
         assert template_line == index_line
