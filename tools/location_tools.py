@@ -1,9 +1,14 @@
+import os
+
+
 class APIKey:
     def __init__(self, api_file="api_key"):
-        _api_key = ""
-
-        with open(api_file, "r") as f:
-            _api_key += f.read()
+        _api_key = os.getenv("OPEN_BUS_API_KEY")
+        if not _api_key:
+            print("Loading Key from file...")
+            _api_key = ""
+            with open(api_file, "r") as f:
+                _api_key += f.read()
 
         self._api_key_ = _api_key.strip()
 

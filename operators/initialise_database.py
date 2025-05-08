@@ -1,6 +1,5 @@
 import os.path
 import sqlite3
-import sys
 
 import pandas as pd
 from xml.etree import ElementTree

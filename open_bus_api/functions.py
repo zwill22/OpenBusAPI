@@ -1,4 +1,4 @@
-from flask import render_template, abort
+from flask import render_template
 
 from tools import get_location_url, api_output, get_base_url
 from operators import setup_database, fetch_operators_data, operators_info
