@@ -9,4 +9,4 @@ bus_operators.db
 operators.db
 .coverage
 my_schemas/
-
+coverage.xml

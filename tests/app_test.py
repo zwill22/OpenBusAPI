@@ -145,7 +145,7 @@ def test_operator_info():
     response = open_bus_api.test_client().get("/operators/info/list")
     assert response.status_code == 200
     output = response.data.decode()
-    soup = BeautifulSoup(output)
+    soup = BeautifulSoup(output, features="html.parser")
 
     for item in soup.find("li"):
         assert item.text in expected_columns
