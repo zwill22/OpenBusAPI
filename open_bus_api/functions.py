@@ -44,6 +44,6 @@ def operators_data():
 
 
 def operators_info_list():
-    template_name = "operators_data.html"
+    template_name = "operator_data.html"
     conn = setup_database()
     return render_template(template_name, columns=operators_info(conn))

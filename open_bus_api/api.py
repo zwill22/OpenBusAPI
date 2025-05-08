@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 
-from .functions import (
+from open_bus_api.functions import (
     fetch_index,
     location_data,
     vehicle_location_data,
