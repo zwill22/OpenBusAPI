@@ -11,7 +11,7 @@ This contains the documentation for the `OpenBusAPI`_ project
 .. _OpenBusAPI: https://github.com/zwill22/OpenBusAPI
 
 .. include:: ../README.md
-   :parser myst_parser.sphinx_
+   :parser: myst_parser.sphinx_
 
 .. toctree::
    :maxdepth: 2
