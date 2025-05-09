@@ -58,7 +58,7 @@ class Config:
         )
         self.database_encoding = data.get("encoding", "windows-1252")
         self.database_file = os.path.abspath(data.get("file", "operators.db"))
-        self.reinitialise = bool(data.get("reinitialise", False))
+        self.reinitialise = bool(data.get("reinitialise", True))
 
         self.bus_data_url = data.get(
             "bus_data_url", "https://data.bus-data.dft.gov.uk/api/v1/datafeed"
