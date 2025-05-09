@@ -29,6 +29,23 @@ class APIKey:
         return "api_key=" + self._api_key_
 
 
+def get_bool(bool_string: str) -> bool:
+    """
+    Converts a boolean string into a boolean.
+
+    Args:
+        bool_string: "True" or "False".
+
+    Returns: True or False.
+    """
+    if bool_string.lower() == "true":
+        return True
+    elif bool_string.lower() == "false":
+        return False
+    else:
+        raise ValueError("Invalid value: {}".format(bool_string))
+
+
 class Config:
     """
     Open Bus API configuration
@@ -58,7 +75,7 @@ class Config:
         )
         self.database_encoding = data.get("encoding", "windows-1252")
         self.database_file = os.path.abspath(data.get("file", "operators.db"))
-        self.reinitialise = bool(data.get("reinitialise", True))
+        self.reinitialise = get_bool(data.get("reinitialise", "true"))
 
         self.bus_data_url = data.get(
             "bus_data_url", "https://data.bus-data.dft.gov.uk/api/v1/datafeed"
