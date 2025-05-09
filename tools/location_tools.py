@@ -43,14 +43,13 @@ def bounding_box(latitude: tuple[float, float], longitude: tuple[float, float]) 
     Convert longitude and latitude to a string formatted as:
     "boundingBox={longitude[0]},{latitude[0]},{longitude[1]},{latitude[1]}"
     This conforms to the open Bus services API specifications:
-    Bounding Box:   Limit results to bus location data with vehicle position
-                    within the rectangular bounding box you set using co-ordinates:
-                    minLongitude, minLatitude, maxLongitude, maxLatitude.
+    Bounding Box: Limit results to bus location data with vehicle position
+    within the rectangular bounding box you set using co-ordinates:
+    minLongitude, minLatitude, maxLongitude, maxLatitude.
 
     Args:
-        latitude (tuple[float, float]): The minimum and maxium latitudes of the box
-        longitude (tuple[float, float]): The minimum and maxium longitudes of the box
-
+        latitude (tuple[float, float]): The minimum and maximum latitudes of the box
+        longitude (tuple[float, float]): The minimum and maximum longitudes of the box
 
     """
     output_string = "&boundingBox="

@@ -34,7 +34,7 @@ def validate_xml(xml_str: str, schema=None, **kwargs) -> bool:
     Args:
         xml_str: XML string to validate
         schema: XML schema to validate against, if none is provided, a new one is created.
-        **kwargs: Arguments to pass to `fetch_schema`
+        kwargs: Arguments to pass to `fetch_schema`
 
     Returns: Whether XML is valid
     """
