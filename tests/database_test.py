@@ -1,5 +1,3 @@
-import pytest
-
 from open_bus_api.config import Config
 from open_bus_api.functions import database_setup
 
