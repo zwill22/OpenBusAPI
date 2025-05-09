@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Open Bus API</title>
+    <style>
+        thead > tr > th {
+            text-align: left;
+        }
+        tbody > tr > th:first-of-type {
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
   <div>
@@ -17,6 +25,65 @@
       </a>
       to provide real-time bus locations and details.
     </p>
+  </div>
+  <div>
+      <p>
+          The Open Bus API provides the following endpoints:
+      </p>
+      <table>
+          <thead>
+          <tr>
+              <th scope="col">
+                  Endpoint
+              </th>
+              <th scope="col">
+                  Description
+              </th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+              <th scope="row">
+                  /
+              </th>
+              <td>
+                  This index page
+              </td>
+          </tr>
+          <tr>
+              <th scope="row">
+                  /location/area/<em>min_latitude</em>/<em>min_longitude</em>/<em>max_latitude</em>/<em>max_longitude</em>
+              </th>
+              <td>
+                  Location data on vehicles within the area provided
+              </td>
+          </tr>
+          <tr>
+              <th scope="row">
+                  /location/vehicle/<em>vehicle_id</em>
+              </th>
+              <td>
+                  Location data on the vehicle with id <em>vehicle_id</em>
+              </td>
+          </tr>
+          <tr>
+              <th scope="row">
+                  /operators/data
+              </th>
+              <td>
+                  Fetch the vehicle operator database in JSON format
+              </td>
+          </tr>
+          <tr>
+              <th scope="row">
+                  /operators/data/list
+              </th>
+              <td>
+                  Provides a summary of the data fields in the operator database
+              </td>
+          </tr>
+          </tbody>
+      </table>
   </div>
 </body>
 </html>

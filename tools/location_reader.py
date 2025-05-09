@@ -6,12 +6,11 @@ from tools.xml_tools import validate_xml
 
 def generate_structure(tree: ElementTree, structure: dict):
     """
-    Recursive function which searches through the `tree` and updates the structure dictionary with each nodes tag, its
-    child, and counts the number of occurrences of each tag.
+    Recursive function which searches through the `tree` and updates the structure
+    dictionary with each nodes tag, its child, and counts the number of occurrences of each tag.
 
     :param tree: Input tree structure containing genuine information.
     :param structure: Dictionary containing
-    :return:
     """
     tag = re.sub(r"{.+}", r"", tree.tag)
 
@@ -40,8 +39,8 @@ def get_structure(tree: ElementTree) -> dict:
 
 def field_count(structure: dict, result: dict[str, int]):
     """
-    Function which recursively searches the `structure` dictionary and counts the occurrences of keys storing results in
-    the `result` dictionary.
+    Function which recursively searches the `structure` dictionary and counts the occurrences
+    of keys storing results in the `result` dictionary.
 
     :param structure: Dictionary describing the structure of a tree.
     :param result: Variable dictionary counting occurrences of keys in embedded dictionary.
