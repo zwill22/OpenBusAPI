@@ -12,3 +12,4 @@ my_schemas/
 coverage.xml
 _html/
 _build/
+config.json

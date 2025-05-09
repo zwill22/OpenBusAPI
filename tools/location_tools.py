@@ -1,43 +1,3 @@
-import os
-
-
-class APIKey:
-    """
-    Class to manage access to the Open Bus data API key.
-    First it searches for a key in the system environment.
-    Second it searches for a key in an `api_file`. If no
-    key is found, an error occurs.
-    """
-
-    def __init__(self, api_file="api_key"):
-        _api_key = os.getenv("OPEN_BUS_API_KEY")
-        if not _api_key:
-            print("Loading Key from file...")
-            _api_key = ""
-            with open(api_file, "r") as f:
-                _api_key += f.read()
-
-        self._api_key_ = _api_key.strip()
-
-    def get_key(self):
-        """
-        Returns a string containing the API key.
-        """
-        return "api_key=" + self._api_key_
-
-
-api_key = APIKey()
-
-
-def get_api_key():
-    """
-    Get the API key string from `api_key`.`
-    Returns: String containing the API key.
-    """
-    global api_key
-    return api_key.get_key()
-
-
 def bounding_box(latitude: tuple[float, float], longitude: tuple[float, float]) -> str:
     """
     Convert longitude and latitude to a string formatted as:
@@ -62,20 +22,33 @@ def bounding_box(latitude: tuple[float, float], longitude: tuple[float, float]) 
     return output_string
 
 
-def get_base_url():
+def get_base_url(
+    api_key=None,
+    bus_data_url="https://data.bus-data.dft.gov.uk/api/v1/datafeed",
+    **kwargs,
+):
     """
     Gets the base URL of the Open Bus data API including the api key.
 
+    Args:
+        api_key (APIKey): The API key.
+        bus_data_url (str): The base URL of the bus data API.
+
     Returns: Base URL for accessing the Open Bus data API using the API key.
     """
-    feed_url = "https://data.bus-data.dft.gov.uk/api/v1/datafeed?"
+    if not api_key:
+        raise ValueError("API key not provided")
 
-    feed_url += get_api_key()
+    feed_url = bus_data_url + "?"
+
+    feed_url += api_key.get_key()
 
     return feed_url
 
 
-def get_location_url(min_latitude, min_longitude, max_latitude, max_longitude):
+def get_location_url(
+    min_latitude, min_longitude, max_latitude, max_longitude, **kwargs
+):
     """
     Constructs the URL for accessing the location data from Open Bus data API.
 
@@ -87,7 +60,7 @@ def get_location_url(min_latitude, min_longitude, max_latitude, max_longitude):
 
     Returns: URL for accessing the location data from Open Bus data API.
     """
-    feed_url = get_base_url()
+    feed_url = get_base_url(**kwargs)
 
     latitude = (float(min_latitude), float(max_latitude))
     longitude = (float(min_longitude), float(max_longitude))

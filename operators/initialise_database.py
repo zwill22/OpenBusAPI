@@ -98,7 +98,9 @@ def setup_database(
     conn = sqlite3.connect(db)
 
     if not db_exists or reinitialise:
+        print("Initialising database: {}".format(db))
         initialise_db(conn, url, encoding)
+        print("Database initialised")
 
     return conn
 
