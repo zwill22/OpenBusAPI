@@ -10,3 +10,5 @@ operators.db
 .coverage
 my_schemas/
 coverage.xml
+_html/
+_build/
