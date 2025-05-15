@@ -13,3 +13,6 @@ coverage.xml
 _html/
 _build/
 config.json
+docs/requirements.txt
+.pytest_cache/
+.ruff_cache/
