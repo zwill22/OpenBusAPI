@@ -2,7 +2,7 @@ import os.path
 import sqlite3
 import polars as pl
 
-sql_path = os.path.join("operators", "operators.sql")
+sql_path = os.path.join("api_database", "operators.sql")
 
 
 def fetch_operators_data(conn: sqlite3.Connection) -> str:
@@ -40,7 +40,7 @@ def operators_info(conn: sqlite3.Connection) -> list:
 
 if __name__ == "__main__":
     from io import StringIO
-    from operators.initialise_database import setup_database
+    from api_database.initialise_database import setup_database
 
     connection = setup_database()
     json = fetch_operators_data(connection)

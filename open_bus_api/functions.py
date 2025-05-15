@@ -1,7 +1,7 @@
 from flask import render_template
 
 from tools import get_location_url, api_output, get_base_url
-from operators import setup_database, fetch_operators_data, operators_info
+from api_database import setup_database, fetch_operators_data, operators_info
 
 
 def database_setup(**kwargs):
