@@ -4,11 +4,11 @@ from tools import get_location_url, api_output, get_base_url
 from api_database import setup_database, fetch_operators_data, operators_info
 
 
-def database_setup(**kwargs):
+def database_setup(path, **kwargs):
     """
     Wrapper for `setup_database()`
     """
-    setup_database(**kwargs)
+    setup_database(path, **kwargs)
 
 
 def fetch_index():

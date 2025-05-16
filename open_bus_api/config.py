@@ -1,6 +1,10 @@
 import os
 import json
+import jsonschema
+import jsonschema_default
+import argparse
 
+from tools.printer import print_config
 
 class APIKey:
     """
@@ -13,12 +17,12 @@ class APIKey:
     def __init__(self, api_env, api_file):
         _api_key = os.getenv(api_env)
         if _api_key:
-            self.message = "API Key found from environment: {}".format(api_env)
+            self.message = ("API Key found from environment", api_env)
         else:
             _api_key = ""
             with open(api_file, "r") as f:
                 _api_key += f.read()
-            self.message = "API Key loaded from file: {}".format(api_file)
+            self.message = ("API Key loaded from file", api_file)
 
         self._api_key_ = _api_key.strip()
 
@@ -27,6 +31,10 @@ class APIKey:
         Returns a string containing the API key.
         """
         return "api_key=" + self._api_key_
+    
+    def print_message(self):
+        print_config(*self.message, newline=True)
+
 
 
 def get_bool(bool_string: str) -> bool:
@@ -38,6 +46,7 @@ def get_bool(bool_string: str) -> bool:
 
     Returns: True or False.
     """
+    print(bool_string)
     if bool_string.lower() == "true":
         return True
     elif bool_string.lower() == "false":
@@ -46,47 +55,98 @@ def get_bool(bool_string: str) -> bool:
         raise ValueError("Invalid value: {}".format(bool_string))
 
 
+def parse_cmdline(args=None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        prog="OpenBusAPI",
+        description="""
+        Welcome to the OpenBusAPI which provides an interface to bus data for the
+        BusTracker App.
+        """,
+        epilog="Diolch yn fawr iawn.",
+    )
+
+    parser.add_argument(
+        "config", help="Filepath for config file", nargs="?", default="config.json"
+    )
+
+    return parser.parse_args(args=args)
+
+
+def json_load(file):
+    data = None
+    with open(file, "r") as f:
+        data = json.load(f)
+
+    return data
+
+
+def load_json(file):
+    data = None
+    try:
+        data = json_load(file)
+        print("Configuration Data loaded from", file)
+    except FileNotFoundError:
+        print("No configuration file found at", file)
+        data = {}
+
+    return data
+
+
+def load_config_data(args):
+    try:
+        options = parse_cmdline(args=args)
+    except SystemExit:
+        raise RuntimeError("Unable to parse command line options")
+
+    file = os.path.abspath(options.config)
+
+    return load_json(file)
+
+
+def validate_config(input_data: dict, schema: dict):
+    jsonschema.validate(instance=input_data, schema=schema)
+
+    jsonschema_default.fill_from(schema=schema, target=input_data)
+
 class Config:
     """
     Open Bus API configuration
     """
 
-    def __init__(self, file=None, **kwargs):
-        if file:
-            data = None
-            try:
-                with open(file, "r") as f:
-                    data = json.load(f)
-                print("Data loaded from", file)
-            except FileNotFoundError:
-                print("No configuration file found at", file)
-                data = {}
+    def __init__(self, args=None, schema_file="open_bus_config.schema.json", **kwargs):
+        print("\n" + "-" * 32 + "\n\tOpen Bus API\n" + "-" * 32 + "\n")
+        if not kwargs:
+            data = load_config_data(args)
         else:
             data = kwargs
 
-        self.name = data.get("name", "OpenBusAPI")
-        api_key_env = data.get("api_key_env", "OPEN_BUS_API_KEY")
-        api_key_file = os.path.abspath(data.get("api_key_file", "api_key"))
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        schema_path = os.path.join(dir_path, schema_file)
+        schema = json_load(schema_path)
+        validate_config(data, schema)
 
-        self.api_key = APIKey(api_key_env, api_key_file)
+        self.name = data["name"]
+        print_config("API Name", self.name, newline=True)
 
-        self.database_url = data.get(
-            "url", "https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml"
-        )
-        self.database_encoding = data.get("encoding", "windows-1252")
-        self.database_file = os.path.abspath(data.get("file", "operators.db"))
-        self.reinitialise = get_bool(data.get("reinitialise", "true"))
+        self.database_filepath = os.path.abspath(data["database_file"])
+        print_config("Database file", self.database_filepath)
 
-        self.bus_data_url = data.get(
-            "bus_data_url", "https://data.bus-data.dft.gov.uk/api/v1/datafeed"
-        )
-
-        print("Open Bus API configuration")
-        print("Name: {}".format(self.name))
-        print(self.api_key.message)
-        print("Operator Database URL: {}".format(self.database_url))
-        print("Operator Database encoding: {}".format(self.database_encoding))
-        print("Operator Database file: {}".format(self.database_file))
+        self.reinitialise = data["reinitialise"]
         if self.reinitialise:
-            print("Database will be reinitialised")
-        print("Bus Data URL: {}".format(self.bus_data_url))
+            print("--> Database will be reinitialised")
+
+
+        self.bus_data_url = data["bus_data_url"]
+        print_config("Bus Data URL", self.bus_data_url, newline=True)
+        api_key_env = data["api_key_env"]
+        api_key_filepath = os.path.abspath(data["api_key_file"])
+        self.api_key = APIKey(api_key_env, api_key_filepath)
+        self.api_key.print_message()
+
+        self.operator_database_url = data["operator_database_url"]
+        self.operator_database_encoding = data["operator_database_encoding"]
+        print_config("Operator Database URL", self.operator_database_url, newline=True)
+        print_config("Operator Database encoding", self.operator_database_encoding)
+
+        print()
+

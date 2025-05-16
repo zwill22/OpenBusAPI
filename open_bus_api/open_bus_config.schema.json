@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "open_bus_api_config.schema.json",
+  "title": "OpenBusAPI",
+  "description": "Config file for OpenBusAPI",
+  "type": "object",
+
+  "properties": {
+    "name": {
+        "title": "API Name",
+        "description": "Name for the API",
+        "type": "string",
+        "default": "OpenBusAPI"
+    },
+    "api_key_env": {
+      "title": "Environent variable name for API Key",
+      "description": "Environment variable which stores the api key",
+      "type": "string",
+      "default": "OPEN_BUS_API_KEY"
+    },
+    "api_key_file": {
+      "title": "API Key file",
+      "description": "Filepath to plain text file containing the API Key",
+      "type": "string",
+      "default": "api_key"
+    },
+    "operator_database_url": {
+      "title": "Operator Database URL",
+      "description": "URL to XML file containing Operators data",
+      "type": "string",
+      "default": "https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml"
+    },
+    "operator_database_encoding": {
+      "title": "Operator Database Encoding",
+      "description": "Encoding of the Operators XML database",
+      "type": "string",
+      "default": "windows-1252"
+    },
+    "database_file": {
+      "title": "Database Filepath",
+      "description": "Path to the database file, if one is not present a new version will be initialised at the specified location.",
+      "type": "string",
+      "default": "open_bus_database.db"
+    },
+    "reinitialise": {
+      "title": "Reinitialise database",
+      "description": "Reinitialise the database regardless of whether it already exists at the specified file path.",
+      "type": "boolean",
+      "default": false
+    },
+    "bus_data_url": {
+      "title": "Bus Data URL",
+      "description": "URL for the bus datafeed.",
+      "type": "string",
+      "default": "https://data.bus-data.dft.gov.uk/api/v1/datafeed"
+    }
+  },
+
+  "additionalProperties": false
+}
+

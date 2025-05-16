@@ -12,17 +12,17 @@ from open_bus_api.functions import (
     database_setup,
 )
 
-config = Config(file="config.json")
+config = Config(args=None)
 
 app = Flask(config.name)
 CORS(app)
 
 # Reinitialise database on startup
 database_setup(
+    config.database_filepath,
     reinitialise=config.reinitialise,
-    url=config.database_url,
-    encoding=config.database_encoding,
-    db=config.database_file,
+    url=config.operator_database_url,
+    encoding=config.operator_database_encoding
 )
 
 
@@ -52,12 +52,12 @@ def get_vehicle_location_data(vehicle_id):
 
 @app.route("/operators/data")
 def get_operators_data():
-    return operators_data(db=config.database_file)
+    return operators_data(db=config.database_filepath)
 
 
 @app.route("/operators/info/list")
 def get_operators_info_list():
-    return operators_info_list(db=config.database_file)
+    return operators_info_list(db=config.database_filepath)
 
 
 if __name__ == "__main__":

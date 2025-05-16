@@ -16,7 +16,8 @@ dependencies = [
     "flask_cors>=4.0.0",
     "pandas>=2.2.3",
     "polars>=1.29.0",
-    "xmlschema>=4.0.1"
+    "xmlschema>=4.0.1",
+    "jsonschema-default>=1.8.1",
 ]
 keywords = ["Python", "API", "Flask", "OpenBus", "BusTracker"]
 classifiers = [

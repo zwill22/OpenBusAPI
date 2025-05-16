@@ -6,8 +6,8 @@ def test_database_setup():
     config = Config(file="config.json")
 
     database_setup(
+        config.database_filepath,
         reinitialise=True,
-        url=config.database_url,
-        encoding=config.database_encoding,
-        db=config.database_file,
+        url=config.operator_database_url,
+        encoding=config.operator_database_encoding
     )

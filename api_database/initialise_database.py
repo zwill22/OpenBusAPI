@@ -3,7 +3,7 @@ import sqlite3
 
 import pandas as pd
 from xml.etree import ElementTree
-from tools import api_output
+from tools import api_output, printer
 
 
 def get_record(tree: ElementTree.Element) -> dict:
@@ -72,39 +72,68 @@ def initialise_db(conn: sqlite3.Connection, url: str, encoding: str):
         setup_table(tree, conn)
 
 
-def setup_database(
-    reinitialise=False,
-    url="https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml",
-    encoding="windows-1252",
-    db="operators.db",
-) -> sqlite3.Connection:
+def setup_operator_database(
+        connection: sqlite3.Connection,
+        operator_url="https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml",
+        operator_encoding="windows-1252",
+        **kwargs
+):
     """
-    Sets up a connection to the database, if it exists.
-    Else the database is initialised and the connection created.
+    Sets up the operator part of the database at `connection` using the provided URL and encoding.
 
     Args:
-        reinitialise: Whether to reinitialise the database regardless of whether it exists
-        url: URL of the database
-        encoding: Expeceted encoding of the data
-        db: Database name
-
-    Returns: Connection to the database
+        connection (sqlite3.Connection): Connection to the database
+        operator_url (str, optional): URL for operator XML data. Defaults to "https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml".
+        operator_encoding (str, optional): Encoding for the XML file. Defaults to "windows-1252".
     """
-    db_exists = False
 
-    if os.path.isfile(db):
-        db_exists = True
+    initialise_db(connection, operator_url, operator_encoding)
+    print("-- Operator database initialised")
 
-    conn = sqlite3.connect(db)
+
+def setup_stop_database(
+        connection: sqlite3.Connection,
+        stop_url: str = "",
+        stop_encoding: str = "UTF-8",
+        **kwargs
+):
+    """
+    Setups up the Stop database using the online version at `stop_url`.
+
+    Args:
+        connection (sqlite3.Connection): Connection to the database
+        stop_url (str, optional): URL for the Stop data in CSV format. Defaults to "".
+        stop_encoding (str, optional): Encoding of the CSV file. Defaults to "UTF-8".
+    """
+    pass
+
+
+def setup_database(path: str, reinitialise: bool = False, **kwargs) -> sqlite3.Connection:
+    """
+    Sets up connection to the database, if it exists. Else the database
+    is initialised and the connection created
+
+    Args:
+        path (str): The (relative) path to the database file.
+        reinitialise (bool, optional): Whether to reinitialise the database regardless of whether it already exists. Defaults to False.
+
+    Returns:
+        sqlite3.Connection: Connection to the database
+    """
+    db_exists = os.path.isfile(path)
+
+    conn = sqlite3.connect(path)
 
     if not db_exists or reinitialise:
-        print("Initialising database: {}".format(db))
-        initialise_db(conn, url, encoding)
-        print("Database initialised")
+        printer.print_config("Initialising database", path, newline=True)
+        setup_operator_database(conn, **kwargs)
+        setup_stop_database(conn, **kwargs)
 
     return conn
 
 
+
+
 if __name__ == "__main__":
-    connection = setup_database(reinitialise=True)
+    connection = setup_database("example.db", reinitialise=True)
     connection.close()

@@ -10,10 +10,10 @@ def check_default_config(config: Config, reinitialisation_value: bool = True):
     assert config.api_key.get_key() == "api_key=FAKE_API_KEY"
 
     db_url = "https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml"
-    assert config.database_url == db_url
-    assert config.database_file == os.path.abspath("operators.db")
+    assert config.operator_database_url == db_url
+    assert config.database_filepath == os.path.abspath("open_bus_database.db")
     assert config.reinitialise == reinitialisation_value
-    assert config.database_encoding == "windows-1252"
+    assert config.operator_database_encoding == "windows-1252"
 
 
 def test_config():
