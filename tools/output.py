@@ -6,7 +6,7 @@ def api_output(feed_url: str) -> bytes:
     Returns the content of a URL
 
     Args:
-        feed_url: Lookup URL
+        feed_url (str): Lookup URL
 
     Returns: Content of URL in bytes
     """

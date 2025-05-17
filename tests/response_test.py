@@ -1,5 +1,5 @@
 import pytest
-from tools.location_reader import analyse_response
+from analyse_xml import analyse_response
 
 check_inputs = [
     ("", False),

@@ -34,28 +34,22 @@ class APIKey:
         return "api_key=" + self._api_key_
 
     def print_message(self):
+        """
+        Print the message to the console explaining the
+        API key.
+        """
         print_config(*self.message, newline=True)
 
 
-def get_bool(bool_string: str) -> bool:
+def parse_cmdline(args=None) -> argparse.Namespace:
     """
-    Converts a boolean string into a boolean.
+    Parse commandline arguments and return an argparse.Namespace
 
     Args:
-        bool_string: "True" or "False".
+        args (list, optional): Arguments to parse directly
 
-    Returns: True or False.
+    Returns: Argparse Namespace
     """
-    print(bool_string)
-    if bool_string.lower() == "true":
-        return True
-    elif bool_string.lower() == "false":
-        return False
-    else:
-        raise ValueError("Invalid value: {}".format(bool_string))
-
-
-def parse_cmdline(args=None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="OpenBusAPI",
         description="""
@@ -72,7 +66,15 @@ def parse_cmdline(args=None) -> argparse.Namespace:
     return parser.parse_args(args=args)
 
 
-def json_load(file):
+def json_load(file: str) -> dict:
+    """
+    Read JSON file to dictionary
+
+    Args:
+        file (str): JSON file path
+
+    Returns: JSON dictionary
+    """
     data = None
     with open(file, "r") as f:
         data = json.load(f)
@@ -81,6 +83,15 @@ def json_load(file):
 
 
 def load_json(file):
+    """
+    Load JSON file to dictionary or return empty dictionary
+    if file does not exist.
+
+    Args:
+        file (str): JSON file path
+
+    Returns: JSON dictionary
+    """
     try:
         data = json_load(file)
         print("Configuration Data loaded from", file)
@@ -92,6 +103,14 @@ def load_json(file):
 
 
 def load_config_data(args):
+    """
+    Parse command line arguments for config file name and
+    read the config file to dictionary
+    Args:
+        args (list, optional): Arguments to parse directly
+
+    Returns: Config dictionary
+    """
     try:
         options = parse_cmdline(args=args)
     except SystemExit:
@@ -103,6 +122,14 @@ def load_config_data(args):
 
 
 def validate_config(input_data: dict, schema: dict):
+    """
+    Validate the configuration data against the schema. Fill the
+    data with default values for missing fields.
+
+    Args:
+        input_data (dict): Input configuration data
+        schema (dict): Configuration data schema
+    """
     try:
         jsonschema.validate(instance=input_data, schema=schema)
     except jsonschema.exceptions.ValidationError as e:

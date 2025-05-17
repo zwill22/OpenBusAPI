@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 from io import StringIO
 from open_bus_api.api import app as open_bus_api
-from tools.location_reader import analyse_response
+from analyse_xml import analyse_response
 
 
 def test_index():

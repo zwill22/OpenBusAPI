@@ -11,7 +11,7 @@ def fetch_operators_data(conn: sqlite3.Connection) -> str:
     sqlite3 database
 
     Args:
-        conn: Connection to the sqlite3 database
+        conn (sqlite3.Connection): Connection to the sqlite3 database
 
     Returns: Data in JSON format
     """
@@ -27,7 +27,7 @@ def operators_info(conn: sqlite3.Connection) -> list:
     Fetches a list of the fields in the operators database
 
     Args:
-        conn: Connection to the sqlite3 database
+        conn (sqlite3.Connection): Connection to the sqlite3 database
 
     Returns: List of columns in the operators database
     """

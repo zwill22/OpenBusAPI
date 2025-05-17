@@ -11,22 +11,26 @@ def database_setup(path, **kwargs):
     setup_database(path, **kwargs)
 
 
-def fetch_index():
+def fetch_index() -> str:
     """
-    Returns the index page
+    Renders the index page
+
+    Returns: The index page
     """
     return render_template("index.html")
 
 
-def location_data(min_lat, min_long, max_lat, max_long, **kwargs):
+def location_data(
+    min_lat: float, min_long: float, max_lat: float, max_long: float, **kwargs
+) -> bytes:
     """
     Fetches the locations data on vehicles in the provided area from the API
 
     Args:
-        min_lat: Minimum latitude
-        min_long: Minimum longitude
-        max_lat: Maximum latitude
-        max_long: Maximum longitude
+        min_lat (float): Minimum latitude
+        min_long (float): Minimum longitude
+        max_lat (float): Maximum latitude
+        max_long (float): Maximum longitude
 
     Returns: API response data in XML format
     """
@@ -35,12 +39,12 @@ def location_data(min_lat, min_long, max_lat, max_long, **kwargs):
     return api_output(feed_url)
 
 
-def vehicle_location_data(vehicle_id, **kwargs):
+def vehicle_location_data(vehicle_id: str, **kwargs) -> bytes:
     """
     Fetches the locations data on vehicle with id `vehicle_id` from the API
 
     Args:
-        vehicle_id: Vehicle ID for the API request
+        vehicle_id (str): Vehicle ID for the API request
 
     Returns: API response data in XML format
     """
@@ -51,7 +55,7 @@ def vehicle_location_data(vehicle_id, **kwargs):
     return api_output(feed_url)
 
 
-def operators_data(path):
+def operators_data(path: str) -> str:
     """
     Fetches the operators database
 
@@ -63,7 +67,7 @@ def operators_data(path):
     return fetch_operators_data(conn)
 
 
-def operators_info_list(path):
+def operators_info_list(path: str) -> str:
     """x
     Returns a summary of the contents of the operators database
 
