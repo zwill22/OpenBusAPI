@@ -4,7 +4,7 @@ import pytest
 from open_bus_api.config import Config
 
 
-def check_default_config(config: Config, reinitialisation_value: bool = True):
+def check_default_config(config: Config, reinitialisation_value: bool = False):
     assert config.bus_data_url == "https://data.bus-data.dft.gov.uk/api/v1/datafeed"
     assert config.name == "OpenBusAPI"
     assert config.api_key.get_key() == "api_key=FAKE_API_KEY"
@@ -25,15 +25,19 @@ def test_config():
 
     os.environ["OPEN_BUS_API_KEY"] = "FAKE_API_KEY"
 
-    config = Config()
-    check_default_config(config)
-    config = Config(file="fake_config_file.json")
+    config_path = os.path.abspath("config.json")
+    if not os.path.exists(config_path):
+        config = Config(args=[])
+        check_default_config(config)
+
+    config = Config(args=["fake_config_file.json"])
     check_default_config(config)
 
-    config = Config(reinitialise="true")
-    check_default_config(config)
-    config = Config(reinitialise="false")
-    check_default_config(config, reinitialisation_value=False)
+    for reinitialisation_value in [True, False]:
+        config = Config(reinitialise=reinitialisation_value)
+        check_default_config(config, reinitialisation_value=reinitialisation_value)
 
     with pytest.raises(ValueError):
-        Config(reinitialise="")
+        Config(reinitialise="true")
+    with pytest.raises(ValueError):
+        Config(reinitialise="false")

@@ -51,22 +51,26 @@ def vehicle_location_data(vehicle_id, **kwargs):
     return api_output(feed_url)
 
 
-def operators_data(**kwargs):
+def operators_data(path):
     """
     Fetches the operators database
 
+    path (str): Path to the database
+
     Returns: The operators data in JSON format
     """
-    conn = setup_database(**kwargs)
+    conn = setup_database(path)
     return fetch_operators_data(conn)
 
 
-def operators_info_list(**kwargs):
-    """
+def operators_info_list(path):
+    """x
     Returns a summary of the contents of the operators database
+
+    path (str): Path to the database
 
     Returns: Page describing the contents of the operators database
     """
     template_name = "operator_data.html"
-    conn = setup_database(**kwargs)
+    conn = setup_database(path)
     return render_template(template_name, columns=operators_info(conn))

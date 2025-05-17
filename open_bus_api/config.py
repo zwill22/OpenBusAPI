@@ -6,6 +6,7 @@ import argparse
 
 from tools.printer import print_config
 
+
 class APIKey:
     """
     Class to manage access to the Open Bus data API key.
@@ -31,10 +32,9 @@ class APIKey:
         Returns a string containing the API key.
         """
         return "api_key=" + self._api_key_
-    
+
     def print_message(self):
         print_config(*self.message, newline=True)
-
 
 
 def get_bool(bool_string: str) -> bool:
@@ -81,7 +81,6 @@ def json_load(file):
 
 
 def load_json(file):
-    data = None
     try:
         data = json_load(file)
         print("Configuration Data loaded from", file)
@@ -104,9 +103,13 @@ def load_config_data(args):
 
 
 def validate_config(input_data: dict, schema: dict):
-    jsonschema.validate(instance=input_data, schema=schema)
+    try:
+        jsonschema.validate(instance=input_data, schema=schema)
+    except jsonschema.exceptions.ValidationError as e:
+        raise ValueError(e)
 
     jsonschema_default.fill_from(schema=schema, target=input_data)
+
 
 class Config:
     """
@@ -135,7 +138,6 @@ class Config:
         if self.reinitialise:
             print("--> Database will be reinitialised")
 
-
         self.bus_data_url = data["bus_data_url"]
         print_config("Bus Data URL", self.bus_data_url, newline=True)
         api_key_env = data["api_key_env"]
@@ -149,4 +151,3 @@ class Config:
         print_config("Operator Database encoding", self.operator_database_encoding)
 
         print()
-
