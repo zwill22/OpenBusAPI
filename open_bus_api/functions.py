@@ -3,7 +3,13 @@ from flask import render_template
 
 from .config import Config
 from tools import get_location_url, api_output, get_base_url
-from api_database import setup_database, fetch_operators_data, operators_info, get_stops
+from api_database import (
+    setup_database,
+    fetch_operators_data,
+    operators_info,
+    get_stops,
+    get_stops_code,
+)
 
 
 def get_version() -> str:
@@ -124,3 +130,20 @@ def fetch_stops_data(
     """
     conn = setup_database(path)
     return get_stops(conn, min_lat, min_long, max_lat, max_long)
+
+
+def fetch_stops_code_data(path, codes: str) -> str:
+    """
+    Fetches the stops data on vehicles in the provided area from the database
+
+    Args:
+        path (str): Path to the database
+        codes (str): List of comma separated codes in string format
+
+    Returns: Stops data in JSON format
+    """
+    conn = setup_database(path)
+
+    codes_list = codes.split(",")
+
+    return get_stops_code(conn, codes_list)

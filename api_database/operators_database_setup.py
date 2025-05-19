@@ -2,7 +2,7 @@ import sqlite3
 
 import pandas as pd
 from xml.etree import ElementTree
-from tools import api_output, printer
+from tools import api_output
 
 
 def get_record(tree: ElementTree.Element) -> dict:

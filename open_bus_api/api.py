@@ -12,6 +12,7 @@ from open_bus_api.functions import (
     database_setup,
     get_version,
     fetch_stops_data,
+    fetch_stops_code_data,
 )
 
 config = Config(args=None)
@@ -120,6 +121,19 @@ def get_stops_data(min_lat, min_long, max_lat, max_long):
     return fetch_stops_data(
         config.database_filepath, min_lat, min_long, max_lat, max_long
     )
+
+
+@app.route("/stops/codes/<codes>")
+def get_stops_code_data(codes: str):
+    """
+    Returns the data for all transport stops matching the provided `codes`
+
+    Args:
+        codes (str): List of stop codes as comma separated string
+
+    Returns: Stops data in JSON format
+    """
+    return fetch_stops_code_data(config.database_filepath, codes)
 
 
 if __name__ == "__main__":

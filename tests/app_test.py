@@ -1,3 +1,4 @@
+import json
 import pytest
 import polars as pl
 from bs4 import BeautifulSoup
@@ -168,6 +169,8 @@ stop_cases = [
     ("/stops/area/0.0/0.0/1.0/1.0", 200),
     ("/stops/area/-1.0/-1.0/0.0/0.0", 200),
     ("/stops/area/1/1/0/0", 200),
+    ("/stops/codes", 404),
+    ("/stops/codes/thiscodeisratherlongandfake", 200),
 ]
 
 
@@ -178,3 +181,25 @@ def test_stop_area_data(path, output):
     if output == 200:
         data = response.data.decode()
         assert data == "[]"
+
+
+code_cases = [
+    ("myfakecode", 0),
+    ("wregawg", 1),
+]
+
+
+@pytest.mark.parametrize("codes, n", code_cases)
+def test_real_stop_area_data(codes, n):
+    response = open_bus_api.test_client().get("/stops/codes/{0}".format(codes))
+    assert response.status_code == 200
+
+    data = response.data.decode()
+
+    json_data = json.loads(data)
+
+    codes_list = codes.split(",")
+    assert n <= len(codes_list)
+    assert len(json_data) == n
+    for entry in json_data:
+        assert entry["NaptanCode"] in codes_list
