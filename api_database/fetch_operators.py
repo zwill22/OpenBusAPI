@@ -2,7 +2,8 @@ import os.path
 import sqlite3
 import polars as pl
 
-sql_path = os.path.join("api_database", "operators.sql")
+dir_path = os.path.dirname(os.path.realpath(__file__))
+sql_path = os.path.join(dir_path, "operators.sql")
 
 
 def fetch_operators_data(conn: sqlite3.Connection) -> str:

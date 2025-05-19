@@ -10,6 +10,8 @@ from open_bus_api.functions import (
     operators_data,
     operators_info_list,
     database_setup,
+    get_version,
+    fetch_stops_data,
 )
 
 config = Config(args=None)
@@ -29,6 +31,16 @@ def index():
     Returns: Index page
     """
     return fetch_index()
+
+
+@app.route("/version")
+def version():
+    """
+    Returns the version of the Open-Bus API as a string
+
+    Returns: Version string
+    """
+    return get_version()
 
 
 @app.route("/location/area/<min_lat>/<min_long>/<max_lat>/<max_long>")
@@ -90,6 +102,24 @@ def get_operators_info_list():
     Returns: Operators information page
     """
     return operators_info_list(config.database_filepath)
+
+
+@app.route("/stops/area/<min_lat>/<min_long>/<max_lat>/<max_long>")
+def get_stops_data(min_lat, min_long, max_lat, max_long):
+    """
+    Returns the information of all transport stops in the given area
+
+    Args:
+        min_lat (float): Minimum latitude
+        min_long (float): Minimum longitude
+        max_lat (float): Maximum latitude
+        max_long (float): Maximum longitude
+
+    Returns: Stops data in JSON format
+    """
+    return fetch_stops_data(
+        config.database_filepath, min_lat, min_long, max_lat, max_long
+    )
 
 
 if __name__ == "__main__":

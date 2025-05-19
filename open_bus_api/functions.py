@@ -1,8 +1,21 @@
+import toml
 from flask import render_template
 
 from .config import Config
 from tools import get_location_url, api_output, get_base_url
-from api_database import setup_database, fetch_operators_data, operators_info
+from api_database import setup_database, fetch_operators_data, operators_info, get_stops
+
+
+def get_version() -> str:
+    """
+    Gets the version of Open-Bus API from its metadata.
+
+    Returns: Version string
+    """
+    with open("pyproject.toml") as f:
+        data = toml.load(f)
+
+    return data["project"]["version"]
 
 
 def database_setup(config: Config):
@@ -82,7 +95,7 @@ def operators_data(path: str) -> str:
 
 
 def operators_info_list(path: str) -> str:
-    """x
+    """
     Returns a summary of the contents of the operators database
 
     path (str): Path to the database
@@ -92,3 +105,22 @@ def operators_info_list(path: str) -> str:
     template_name = "operator_data.html"
     conn = setup_database(path)
     return render_template(template_name, columns=operators_info(conn))
+
+
+def fetch_stops_data(
+    path, min_lat: float, min_long: float, max_lat: float, max_long: float
+) -> str:
+    """
+    Fetches the stops data on vehicles in the provided area from the database
+
+    Args:
+        path (str): Path to the database
+        min_lat (float): Minimum latitude
+        min_long (float): Minimum longitude
+        max_lat (float): Maximum latitude
+        max_long (float): Maximum longitude
+
+    Returns: Result of database query in JSON format
+    """
+    conn = setup_database(path)
+    return get_stops(conn, min_lat, min_long, max_lat, max_long)
