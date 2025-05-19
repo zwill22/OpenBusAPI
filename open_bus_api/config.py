@@ -143,8 +143,11 @@ class Config:
     Open Bus API configuration
     """
 
-    def __init__(self, args=None, schema_file="open_bus_config.schema.json", **kwargs):
-        print("\n" + "-" * 32 + "\n\tOpen Bus API\n" + "-" * 32 + "\n")
+    def __init__(
+        self, args=None, schema_file="open_bus_config.schema.json", n=128, **kwargs
+    ):
+        self.line_length = n
+        self.print_header()
         if not kwargs:
             data = load_config_data(args)
         else:
@@ -177,4 +180,30 @@ class Config:
         print_config("Operator Database URL", self.operator_database_url, newline=True)
         print_config("Operator Database encoding", self.operator_database_encoding)
 
+        self.stop_database_filepath = os.path.abspath(data["stop_database_file"])
+        self.stop_database_url = data["stop_database_url"]
+        self.stop_database_encoding = data["stop_database_encoding"]
+        if os.path.exists(self.stop_database_filepath):
+            print_config(
+                "Stop Database Filepath", self.stop_database_filepath, newline=True
+            )
+        else:
+            print("\nStop database file not found, will create it")
+            print_config("Stop database URL", self.stop_database_url)
+            print_config("Stop database save filepath", self.stop_database_filepath)
+        print_config("Stop database encoding", self.stop_database_encoding)
+
         print()
+
+    def print_header(self):
+        n = self.line_length
+        line = "-" * n
+        title = "Open Bus API".center(n)
+        print("\n{0}\n{1}\n{0}\n".format(line, title))
+
+    def print_footer(self):
+        """
+        Print line to mark the end of the config details
+        """
+        print()
+        print("-" * self.line_length + "\n")

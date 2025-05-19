@@ -18,12 +18,7 @@ app = Flask(config.name)
 CORS(app)
 
 # Reinitialise database on startup
-database_setup(
-    config.database_filepath,
-    reinitialise=config.reinitialise,
-    url=config.operator_database_url,
-    encoding=config.operator_database_encoding,
-)
+database_setup(config)
 
 
 @app.route("/")

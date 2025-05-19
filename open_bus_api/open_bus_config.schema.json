@@ -36,6 +36,24 @@
       "type": "string",
       "default": "windows-1252"
     },
+    "stop_database_file": {
+      "title": "Stop database filepath (CSV or GZ)",
+      "description": "Filepath to Stop database file, can be CSV or compressed CSV (GZ). If file does not exist it will be created at this location.",
+      "type": "string",
+      "default": "Stops.csv.gz"
+    },
+    "stop_database_url": {
+      "title": "Stop database URL",
+      "description": "URL to fetch Stop database from when stop file cannot be found",
+      "type": "string",
+      "default": "https://naptan.api.dft.gov.uk/v1/access-nodes?dataFormat=csv"
+    },
+    "stop_database_encoding": {
+      "title": "Stop database encoding",
+      "description": "Encoding of the Stop CSV database",
+      "type": "string",
+      "default": "utf8"
+    },
     "database_file": {
       "title": "Database Filepath",
       "description": "Path to the database file, if one is not present a new version will be initialised at the specified location.",

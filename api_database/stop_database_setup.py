@@ -5,6 +5,7 @@ import requests
 
 import polars as pl
 
+
 def fetch_stops_file(url: str, file: str):
     response = requests.get(url, stream=True)
     with gzip.open(file, "wb") as f:
@@ -20,10 +21,13 @@ def setup_stop_database(
     **kwargs,
 ):
     """
-    Setups up the Stop database using the online version at `stop_url`.
+    Setups up the Stop database using the local file `stop_file`, if it exists.
+    Else the online version at `stop_url` is downloaded and saved to `stop_file`.
+    The `stop_file` file can be either a CSV file or a GZIP file containing the CSV data.
 
     Args:
         conn (sqlite3.Connection): Connection to the database
+        stop_file (str, optional): Path to the stops file. Defaults to "Stops.csv.gz".
         stop_url (str, optional): URL for the Stop data in CSV format. Defaults to "".
         stop_encoding (str, optional): Encoding of the CSV file. Defaults to "UTF-8".
     """
@@ -45,7 +49,7 @@ def setup_stop_database(
         "DefaultWaitTime",
         "Notes",
         "NotesLang",
-        "Status"
+        "Status",
     ]
     if not os.path.isfile(stop_file):
         fetch_stops_file(stop_url, stop_file)

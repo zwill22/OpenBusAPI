@@ -1,14 +1,28 @@
 from flask import render_template
 
+from .config import Config
 from tools import get_location_url, api_output, get_base_url
 from api_database import setup_database, fetch_operators_data, operators_info
 
 
-def database_setup(path, **kwargs):
+def database_setup(config: Config):
     """
-    Wrapper for `setup_database()`
+    Wrapper for `setup_database`
+
+    Args:
+        config (Config): configuration object
     """
-    setup_database(path, **kwargs)
+    setup_database(
+        config.database_filepath,
+        reinitialise=config.reinitialise,
+        operator_url=config.operator_database_url,
+        operator_encoding=config.operator_database_encoding,
+        stop_file=config.stop_database_filepath,
+        stop_url=config.stop_database_url,
+        stop_encoding=config.stop_database_encoding,
+    )
+
+    config.print_footer()
 
 
 def fetch_index() -> str:
