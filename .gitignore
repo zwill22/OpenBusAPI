@@ -16,3 +16,4 @@ config.json
 docs/requirements.txt
 .pytest_cache/
 .ruff_cache/
+Stops.csv.gz
