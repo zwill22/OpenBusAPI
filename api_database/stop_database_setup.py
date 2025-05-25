@@ -4,6 +4,7 @@ import sqlite3
 import requests
 
 import polars as pl
+from convertbng.util import convert_lonlat
 
 
 def fetch_stops_file(url: str, file: str):
@@ -11,6 +12,15 @@ def fetch_stops_file(url: str, file: str):
     with gzip.open(file, "wb") as f:
         for chunk in response.iter_content(chunk_size=1024):
             f.write(chunk)
+
+
+def convert_bng(easting, northing):
+    if easting:
+        if northing:
+            result = convert_lonlat([easting], [northing])
+            return [*result[0], *result[1]]
+
+    return None
 
 
 def setup_stop_database(
@@ -50,13 +60,28 @@ def setup_stop_database(
         "Notes",
         "NotesLang",
         "Status",
+        "Lat",
+        "Long",
     ]
+
     if not os.path.isfile(stop_file):
         fetch_stops_file(stop_url, stop_file)
 
     data = (
         pl.scan_csv(stop_file, encoding=stop_encoding, infer_schema_length=None)
         .filter(pl.col("Status") == "active")
+        .with_columns(pl.col("Easting").str.strip_chars().cast(pl.Int64))
+        .with_columns(pl.col("Northing").str.strip_chars().cast(pl.Int64))
+        .with_columns(
+            pl.struct("Easting", "Northing").map_elements(
+                lambda x: convert_bng(x["Easting"], x["Northing"]),
+                return_dtype=pl.List(pl.Float64)
+            ).alias("LongLat")
+        )
+        .with_columns(pl.col("LongLat").list.to_struct(fields=["Long", "Lat"]))
+        .unnest("LongLat")
+        .with_columns(pl.col("Longitude").fill_null(pl.col("Long")))
+        .with_columns(pl.col("Latitude").fill_null(pl.col("Lat")))
         .drop(*drop_cols)
     )
 
