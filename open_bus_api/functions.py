@@ -1,7 +1,7 @@
 import toml
 from flask import render_template
 
-from .config import Config
+from .config import Config, print_footer
 from tools import get_location_url, api_output, get_base_url
 from api_database import (
     setup_database,
@@ -41,7 +41,7 @@ def database_setup(config: Config):
         stop_encoding=config.stop_database_encoding,
     )
 
-    config.print_footer()
+    print_footer()
 
 
 def fetch_index() -> str:

@@ -94,9 +94,9 @@ def load_json(file):
     """
     try:
         data = json_load(file)
-        print("Configuration Data loaded from", file)
+        print_config("Config file", file)
     except FileNotFoundError:
-        print("No configuration file found at", file)
+        print_config("No config file", "Using default configuration")
         data = {}
 
     return data
@@ -138,23 +138,35 @@ def validate_config(input_data: dict, schema: dict):
     jsonschema_default.fill_from(schema=schema, target=input_data)
 
 
+def print_header():
+    logo = ""
+    with open("static/logo.txt", "r") as f:
+        logo = f.read()
+
+    print(logo)
+
+
+def print_footer(char="=", n=100):
+    print(char * n)
+
+
 class Config:
     """
     Open Bus API configuration
     """
 
     def __init__(
-        self, args=None, schema_file="open_bus_config.schema.json", n=128, **kwargs
+        self, args=None, schema_file="config.schema.json", schema_dir="static", **kwargs
     ):
-        self.line_length = n
-        self.print_header()
+        print_header()
         if not kwargs:
             data = load_config_data(args)
         else:
             data = kwargs
 
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        schema_path = os.path.join(dir_path, schema_file)
+        self.line_length = 100
+
+        schema_path = os.path.join(schema_dir, schema_file)
         schema = json_load(schema_path)
         validate_config(data, schema)
 
@@ -192,18 +204,3 @@ class Config:
             print_config("Stop database URL", self.stop_database_url)
             print_config("Stop database save filepath", self.stop_database_filepath)
         print_config("Stop database encoding", self.stop_database_encoding)
-
-        print()
-
-    def print_header(self):
-        n = self.line_length
-        line = "-" * n
-        title = "Open Bus API".center(n)
-        print("\n{0}\n{1}\n{0}\n".format(line, title))
-
-    def print_footer(self):
-        """
-        Print line to mark the end of the config details
-        """
-        print()
-        print("-" * self.line_length + "\n")

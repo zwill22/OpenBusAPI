@@ -8,7 +8,11 @@ from convertbng.util import convert_lonlat
 
 
 def fetch_stops_file(url: str, file: str):
-    response = requests.get(url, stream=True)
+    try:
+        response = requests.get(url, stream=True)
+    except requests.exceptions.RequestException as e:
+        raise RuntimeError(e)
+
     with gzip.open(file, "wb") as f:
         for chunk in response.iter_content(chunk_size=1024):
             f.write(chunk)
@@ -73,10 +77,12 @@ def setup_stop_database(
         .with_columns(pl.col("Easting").str.strip_chars().cast(pl.Int64))
         .with_columns(pl.col("Northing").str.strip_chars().cast(pl.Int64))
         .with_columns(
-            pl.struct("Easting", "Northing").map_elements(
+            pl.struct("Easting", "Northing")
+            .map_elements(
                 lambda x: convert_bng(x["Easting"], x["Northing"]),
-                return_dtype=pl.List(pl.Float64)
-            ).alias("LongLat")
+                return_dtype=pl.List(pl.Float64),
+            )
+            .alias("LongLat")
         )
         .with_columns(pl.col("LongLat").list.to_struct(fields=["Long", "Lat"]))
         .unnest("LongLat")
