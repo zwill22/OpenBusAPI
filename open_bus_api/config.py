@@ -142,7 +142,7 @@ def print_header():
     logo = ""
     with open("static/logo.txt", "r") as f:
         logo = f.read()
-
+    print()
     print(logo)
 
 

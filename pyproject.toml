@@ -53,7 +53,6 @@ name = "open_bus_api"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "-ra -q -v"
 testpaths = [
     "tests"
 ]

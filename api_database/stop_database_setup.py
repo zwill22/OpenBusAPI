@@ -8,6 +8,13 @@ from convertbng.util import convert_lonlat
 
 
 def fetch_stops_file(url: str, file: str):
+    """
+    Fetches stops data from url and writes it to compressed csv file.
+
+    Args:
+        url (str): url to fetch data from
+        file (str): path of file to write to
+    """
     try:
         response = requests.get(url, stream=True)
     except requests.exceptions.RequestException as e:
@@ -19,12 +26,18 @@ def fetch_stops_file(url: str, file: str):
 
 
 def convert_bng(easting, northing):
-    if easting:
-        if northing:
-            result = convert_lonlat([easting], [northing])
-            return [*result[0], *result[1]]
+    """
+    Converts the BNG format to Longitude/Latitude
 
-    return None
+    Args:
+        easting (int): Easting
+        northing (int): Northing
+
+    Returns: Longitude and Latitude as a list
+
+    """
+    result = convert_lonlat([easting], [northing])
+    return [*result[0], *result[1]]
 
 
 def setup_stop_database(

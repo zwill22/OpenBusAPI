@@ -55,7 +55,6 @@ def test_stop_code():
     json_data = json.loads(data)
 
     for entry in json_data:
-        print(entry)
         for key in keys:
             assert key in entry
         assert entry["NaptanCode"] in codes
