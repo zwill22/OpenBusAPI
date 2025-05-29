@@ -1,10 +1,11 @@
+import json
 import pytest
 import polars as pl
 from bs4 import BeautifulSoup
 
 from io import StringIO
 from open_bus_api.api import app as open_bus_api
-from tools.location_reader import analyse_response
+from .analyse_xml import analyse_response
 
 
 def test_index():
@@ -22,6 +23,11 @@ def test_index():
         template_line = template[i].strip()
         index_line = index_output[i].decode().strip()
         assert template_line == index_line
+
+
+def test_version():
+    response = open_bus_api.test_client().get("/version")
+    assert response.status_code == 200
 
 
 cases = [
@@ -69,7 +75,7 @@ def test_area_data(path, output, schema):
 
 real_data = [
     ("/location/area/53.0/-3.1/53.1/-3", 200, 0),
-    ("/location/vehicle/1701", 200, 1),
+    ("/location/vehicle/17015", 200, 1),
 ]
 
 
@@ -149,3 +155,51 @@ def test_operator_info():
 
     for item in soup.find("li"):
         assert item.text in expected_columns
+
+
+stop_cases = [
+    ("/stops", 404),
+    ("/stops/area", 404),
+    ("/stops/area/0", 404),
+    ("/stops/area/0/0", 404),
+    ("/stops/area/0/0/1", 404),
+    ("/stops/area/0/0/1/1", 200),
+    ("/stops/area/0/0/1/1/0", 404),
+    ("/stops/area/a/b/c/d", 500),
+    ("/stops/area/0.0/0.0/1.0/1.0", 200),
+    ("/stops/area/-1.0/-1.0/0.0/0.0", 200),
+    ("/stops/area/1/1/0/0", 200),
+    ("/stops/codes", 404),
+    ("/stops/codes/thiscodeisratherlongandfake", 200),
+]
+
+
+@pytest.mark.parametrize("path, output", stop_cases)
+def test_stop_area_data(path, output):
+    response = open_bus_api.test_client().get(path)
+    assert response.status_code == output
+    if output == 200:
+        data = response.data.decode()
+        assert data == "[]"
+
+
+code_cases = [
+    ("myfakecode", 0),
+    ("wregawg", 1),
+]
+
+
+@pytest.mark.parametrize("codes, n", code_cases)
+def test_real_stop_area_data(codes, n):
+    response = open_bus_api.test_client().get("/stops/codes/{0}".format(codes))
+    assert response.status_code == 200
+
+    data = response.data.decode()
+
+    json_data = json.loads(data)
+
+    codes_list = codes.split(",")
+    assert n <= len(codes_list)
+    assert len(json_data) == n
+    for entry in json_data:
+        assert entry["NaptanCode"] in codes_list

@@ -47,16 +47,20 @@ def get_base_url(
 
 
 def get_location_url(
-    min_latitude, min_longitude, max_latitude, max_longitude, **kwargs
+    min_latitude: float,
+    min_longitude: float,
+    max_latitude: float,
+    max_longitude: float,
+    **kwargs,
 ):
     """
     Constructs the URL for accessing the location data from Open Bus data API.
 
     Args:
-        min_latitude: Minimum latitude of the area
-        min_longitude: Minimum longitude of the area
-        max_latitude: Maximum latitude of the area
-        max_longitude: Maximum longitude of the area
+        min_latitude (float): Minimum latitude of the area
+        min_longitude (float): Minimum longitude of the area
+        max_latitude (float): Maximum latitude of the area
+        max_longitude (float): Maximum longitude of the area
 
     Returns: URL for accessing the location data from Open Bus data API.
     """

@@ -1,4 +1,3 @@
-import os.path
 import sqlite3
 
 import pandas as pd
@@ -11,7 +10,7 @@ def get_record(tree: ElementTree.Element) -> dict:
     Gets the data from a record in the database
 
     Args:
-        tree: A element in the element tree
+        tree (ElementTree.Element): A element in the element tree
 
     Returns: Dictionary of all data from the record
     """
@@ -27,7 +26,7 @@ def get_data(tree: ElementTree.Element) -> pd.DataFrame:
     Converts the data tree element into a dataframe
 
     Args:
-        tree: Element tree
+        tree (ElementTree.Element): A element in the element tree
 
     Returns: The data from the data tree as a dataframe
     """
@@ -46,8 +45,8 @@ def setup_table(tree: ElementTree.Element, conn: sqlite3.Connection):
     Sets up a table in the database
 
     Args:
-        tree: Element tree containing the table data
-        conn: Connection to the database
+        tree (ElementTree.Element): Element tree containing the table data
+        conn (sqlite3.Connection): Connection to the database
     """
     df = get_data(tree)
     df = df.dropna(how="all", axis=1)
@@ -56,14 +55,14 @@ def setup_table(tree: ElementTree.Element, conn: sqlite3.Connection):
     df.to_sql(tree.tag, conn, if_exists="replace", index=False)
 
 
-def initialise_db(conn: sqlite3.Connection, url: str, encoding: str):
+def initialise_operator_db(conn: sqlite3.Connection, url: str, encoding: str):
     """
     Initialises the database by downloading the data from the specified url
 
     Args:
-        conn: Connection to the database
-        url: URL of the database
-        encoding: Expeceted encoding of the data
+        conn (sqlite3.Connection): Connection to the database
+        url (str): URL of the database
+        encoding (str): Expected encoding of the data
     """
     output = api_output(url)
     root = ElementTree.fromstring(output.decode(encoding))
@@ -72,39 +71,20 @@ def initialise_db(conn: sqlite3.Connection, url: str, encoding: str):
         setup_table(tree, conn)
 
 
-def setup_database(
-    reinitialise=False,
-    url="https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml",
-    encoding="windows-1252",
-    db="operators.db",
-) -> sqlite3.Connection:
+def setup_operator_database(
+    conn: sqlite3.Connection,
+    operator_url="https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml",
+    operator_encoding="windows-1252",
+    **kwargs,
+):
     """
-    Sets up a connection to the database, if it exists.
-    Else the database is initialised and the connection created.
+    Sets up the operator part of the database at `connection` using the provided URL and encoding.
 
     Args:
-        reinitialise: Whether to reinitialise the database regardless of whether it exists
-        url: URL of the database
-        encoding: Expeceted encoding of the data
-        db: Database name
-
-    Returns: Connection to the database
+        conn (sqlite3.Connection): Connection to the database
+        operator_url (str, optional): URL for operator XML data. Defaults to "https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml".
+        operator_encoding (str, optional): Encoding for the XML file. Defaults to "windows-1252".
     """
-    db_exists = False
 
-    if os.path.isfile(db):
-        db_exists = True
-
-    conn = sqlite3.connect(db)
-
-    if not db_exists or reinitialise:
-        print("Initialising database: {}".format(db))
-        initialise_db(conn, url, encoding)
-        print("Database initialised")
-
-    return conn
-
-
-if __name__ == "__main__":
-    connection = setup_database(reinitialise=True)
-    connection.close()
+    initialise_operator_db(conn, operator_url, operator_encoding)
+    print("-- Operator database initialised")

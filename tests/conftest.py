@@ -1,5 +1,5 @@
 import pytest
-from tools.xml_tools import fetch_schema
+from .analyse_xml import fetch_schema
 
 
 @pytest.fixture(scope="session")
