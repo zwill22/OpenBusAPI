@@ -4,13 +4,12 @@
   "title": "OpenBusAPI",
   "description": "Config file for OpenBusAPI",
   "type": "object",
-
   "properties": {
     "name": {
-        "title": "API Name",
-        "description": "Name for the API",
-        "type": "string",
-        "default": "OpenBusAPI"
+      "title": "API Name",
+      "description": "Name for the API",
+      "type": "string",
+      "default": "OpenBusAPI"
     },
     "api_key_env": {
       "title": "Environent variable name for API Key",
@@ -73,7 +72,6 @@
       "default": "https://data.bus-data.dft.gov.uk/api/v1/datafeed"
     }
   },
-
   "additionalProperties": false
 }
 
