@@ -4,6 +4,7 @@ import jsonschema
 import jsonschema_default
 import argparse
 
+from tools import version_str
 from tools.printer import print_config
 
 
@@ -171,17 +172,19 @@ class Config:
         validate_config(data, schema)
 
         self.name = data["name"]
+        self.version = version_str()
         print_config("API Name", self.name, newline=True)
+        print_config("Version", self.version, newline=False)
 
         self.database_filepath = os.path.abspath(data["database_file"])
-        print_config("Database file", self.database_filepath)
+        print_config("Database file", self.database_filepath, newline=True)
 
         self.reinitialise = data["reinitialise"]
         if self.reinitialise:
             print("--> Database will be reinitialised")
 
         self.bus_data_url = data["bus_data_url"]
-        print_config("Bus Data URL", self.bus_data_url, newline=True)
+        print_config("Bus Data URL", self.bus_data_url, newline=False)
         api_key_env = data["api_key_env"]
         api_key_filepath = os.path.abspath(data["api_key_file"])
         self.api_key = APIKey(api_key_env, api_key_filepath)
