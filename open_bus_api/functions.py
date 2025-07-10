@@ -1,8 +1,7 @@
-import toml
 from flask import render_template
 
 from .config import Config, print_footer
-from tools import get_location_url, api_output, get_base_url
+from tools import get_location_url, api_output, get_base_url, version_str
 from api_database import (
     setup_database,
     fetch_operators_data,
@@ -18,10 +17,7 @@ def get_version() -> str:
 
     Returns: Version string
     """
-    with open("pyproject.toml") as f:
-        data = toml.load(f)
-
-    return data["project"]["version"]
+    return version_str()
 
 
 def database_setup(config: Config):
