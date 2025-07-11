@@ -1,5 +1,6 @@
 import toml
 
+
 def version_str() -> str:
     """
     Gets the version of Open-Bus API from its metadata.
