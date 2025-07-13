@@ -7,7 +7,7 @@ name = "openBusAPI"
 description = "A Python API interface for the open Bus service API"
 requires-python = ">= 3.10"
 authors = [{ name = "Z M Williams", email = "z.m.will@icloud.com" }]
-version = "0.4.1"
+version = "0.4.2"
 readme = "README.md"
 license = { file = "LICENSE" }
 dependencies = [
@@ -20,8 +20,9 @@ dependencies = [
     "jsonschema-default>=1.8.1",
     "pyarrow>=20.0.0",
     "toml>=0.10.2",
-    "convertbng>=0.7.5",
     "jsonschema>=4.23.0",
+    "bng-latlon>=1.1",
+    "numba>=0.61.2",
 ]
 keywords = ["Python", "API", "Flask", "OpenBus", "BusTracker"]
 classifiers = [
