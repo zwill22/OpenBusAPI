@@ -4,7 +4,7 @@ import sqlite3
 import requests
 
 import polars as pl
-from convertbng.util import convert_lonlat
+from bng_latlon import OSGB36toWGS84 as convert_bng_to_latlon
 
 
 def fetch_stops_file(url: str, file: str):
@@ -25,7 +25,7 @@ def fetch_stops_file(url: str, file: str):
             f.write(chunk)
 
 
-def convert_bng(easting, northing):
+def convert_bng(easting, northing) -> tuple[float, float]:
     """
     Converts the BNG format to Longitude/Latitude
 
@@ -33,11 +33,10 @@ def convert_bng(easting, northing):
         easting (int): Easting
         northing (int): Northing
 
-    Returns: Longitude and Latitude as a list
+    Returns: Longitude and Latitude as a pair
 
     """
-    result = convert_lonlat([easting], [northing])
-    return [*result[0], *result[1]]
+    return convert_bng_to_latlon(easting, northing)
 
 
 def setup_stop_database(
