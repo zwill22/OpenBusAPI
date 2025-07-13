@@ -12,6 +12,14 @@ open\_bus\_api.api module
    :show-inheritance:
    :undoc-members:
 
+open\_bus\_api.config module
+----------------------------
+
+.. automodule:: open_bus_api.config
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 open\_bus\_api.functions module
 -------------------------------
 
