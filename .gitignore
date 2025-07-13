@@ -13,3 +13,9 @@ coverage.xml
 _html/
 _build/
 config.json
+docs/requirements.txt
+.pytest_cache/
+.ruff_cache/
+Stops.csv.gz
+notebook.ipynb
+Stops.csv

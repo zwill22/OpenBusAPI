@@ -2,7 +2,8 @@ import os.path
 import sqlite3
 import polars as pl
 
-sql_path = os.path.join("operators", "operators.sql")
+dir_path = os.path.dirname(os.path.realpath(__file__))
+sql_path = os.path.join(dir_path, "operators.sql")
 
 
 def fetch_operators_data(conn: sqlite3.Connection) -> str:
@@ -11,7 +12,7 @@ def fetch_operators_data(conn: sqlite3.Connection) -> str:
     sqlite3 database
 
     Args:
-        conn: Connection to the sqlite3 database
+        conn (sqlite3.Connection): Connection to the sqlite3 database
 
     Returns: Data in JSON format
     """
@@ -27,7 +28,7 @@ def operators_info(conn: sqlite3.Connection) -> list:
     Fetches a list of the fields in the operators database
 
     Args:
-        conn: Connection to the sqlite3 database
+        conn (sqlite3.Connection): Connection to the sqlite3 database
 
     Returns: List of columns in the operators database
     """
@@ -40,7 +41,7 @@ def operators_info(conn: sqlite3.Connection) -> list:
 
 if __name__ == "__main__":
     from io import StringIO
-    from operators.initialise_database import setup_database
+    from api_database.initialise_database import setup_database
 
     connection = setup_database()
     json = fetch_operators_data(connection)

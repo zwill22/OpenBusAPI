@@ -6,8 +6,8 @@ build-backend = "flit_core.buildapi"
 name = "openBusAPI"
 description = "A Python API interface for the open Bus service API"
 requires-python = ">= 3.10"
-authors = [ { name = "Z M Williams", email = "z.m.will@icloud.com" }]
-version = "0.3.0"
+authors = [{ name = "Z M Williams", email = "z.m.will@icloud.com" }]
+version = "0.4.1"
 readme = "README.md"
 license = { file = "LICENSE" }
 dependencies = [
@@ -16,7 +16,12 @@ dependencies = [
     "flask_cors>=4.0.0",
     "pandas>=2.2.3",
     "polars>=1.29.0",
-    "xmlschema>=4.0.1"
+    "xmlschema>=4.0.1",
+    "jsonschema-default>=1.8.1",
+    "pyarrow>=20.0.0",
+    "toml>=0.10.2",
+    "convertbng>=0.7.5",
+    "jsonschema>=4.23.0",
 ]
 keywords = ["Python", "API", "Flask", "OpenBus", "BusTracker"]
 classifiers = [
@@ -28,6 +33,10 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13"
 ]
+
+[project.urls]
+repository = "https://github.com/zwill22/OpenBusAPI"
+documentation = "https://openbusapi.readthedocs.io/en/latest/"
 
 [project.optional-dependencies]
 dev = [
@@ -48,7 +57,6 @@ name = "open_bus_api"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "-ra -q -v"
 testpaths = [
     "tests"
 ]
@@ -79,3 +87,15 @@ omit = ["tests/*", "docs/*"]
 ignore_errors = true
 fail_under = 80
 skip_empty = true
+exclude_also = [
+    'def __repr__',
+    'if self.debug:',
+    'if settings.DEBUG',
+    'raise AssertionError',
+    'raise NotImplementedError',
+    'if 0:',
+    'if __name__ == .__main__.:',
+    'if TYPE_CHECKING:',
+    'class .*\bProtocol\):',
+    '@(abc\.)?abstractmethod',
+]
