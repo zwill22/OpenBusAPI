@@ -1,10 +1,12 @@
 import os
+import gzip
 import sqlite3
 
 import pandas as pd
 from xml.etree import ElementTree
 
 from api_database.fetch_db_file import fetch_file
+
 
 def get_record(tree: ElementTree.Element) -> dict:
     """
@@ -56,9 +58,16 @@ def setup_table(tree: ElementTree.Element, conn: sqlite3.Connection):
     df.to_sql(tree.tag, conn, if_exists="replace", index=False)
 
 
-def initialise_operator_db(
-    conn: sqlite3.Connection, filepath: str, encoding: str
-):
+def read_file(filepath: str) -> bytes:
+    if filepath.endswith(".gz"):
+        with gzip.open(filepath, "rb") as file:
+            return file.read()
+
+    with open(filepath, "rb") as file:
+        return file.read()
+
+
+def initialise_operator_db(conn: sqlite3.Connection, filepath: str, encoding: str):
     """
     Initialises the database by downloading the data from the specified url
 
@@ -67,7 +76,8 @@ def initialise_operator_db(
         filepath (str): Path to the operator data file
         encoding (str): Expected encoding of the data
     """
-    root = ElementTree.parse(filepath).getroot()
+    output = read_file(filepath)
+    root = ElementTree.fromstring(output.decode(encoding))
 
     for tree in root:
         setup_table(tree, conn)
@@ -91,7 +101,6 @@ def setup_operator_database(
     """
     if not os.path.isfile(operator_filepath):
         fetch_file(operator_url, operator_filepath)
-
 
     initialise_operator_db(conn, operator_filepath, operator_encoding)
     print("-- Operator database initialised")

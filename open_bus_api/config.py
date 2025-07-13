@@ -190,20 +190,35 @@ class Config:
         self.api_key = APIKey(api_key_env, api_key_filepath)
         self.api_key.print_message()
 
+        # TODO Change database to data file when referring to an xml/json/csv file
+        self.operator_database_filepath = os.path.abspath(
+            data["operator_database_file"]
+        )
         self.operator_database_url = data["operator_database_url"]
         self.operator_database_encoding = data["operator_database_encoding"]
-        print_config("Operator Database URL", self.operator_database_url, newline=True)
-        print_config("Operator Database encoding", self.operator_database_encoding)
+        if os.path.exists(self.operator_database_filepath):
+            print_config(
+                "Operator Database Filepath",
+                self.operator_database_filepath,
+                newline=True,
+            )
+        else:
+            print("\nOperator data file not found, will download it")
+            print_config("Operator data file URL", self.operator_database_url)
+            print_config(
+                "Operator data file save path", self.operator_database_filepath
+            )
+        print_config("Operator data file encoding", self.operator_database_encoding)
 
         self.stop_database_filepath = os.path.abspath(data["stop_database_file"])
         self.stop_database_url = data["stop_database_url"]
         self.stop_database_encoding = data["stop_database_encoding"]
         if os.path.exists(self.stop_database_filepath):
             print_config(
-                "Stop Database Filepath", self.stop_database_filepath, newline=True
+                "Stop data filepath", self.stop_database_filepath, newline=True
             )
         else:
-            print("\nStop database file not found, will create it")
-            print_config("Stop database URL", self.stop_database_url)
-            print_config("Stop database save filepath", self.stop_database_filepath)
-        print_config("Stop database encoding", self.stop_database_encoding)
+            print("\nStop data file not found, will download it")
+            print_config("Stop data file URL", self.stop_database_url)
+            print_config("Stop data file save path", self.stop_database_filepath)
+        print_config("Stop data file encoding", self.stop_database_encoding)
