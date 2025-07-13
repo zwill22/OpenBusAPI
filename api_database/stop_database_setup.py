@@ -1,28 +1,10 @@
 import os
-import gzip
 import sqlite3
-import requests
-
 import polars as pl
+
 from bng_latlon import OSGB36toWGS84 as convert_bng_to_latlon
 
-
-def fetch_stops_file(url: str, file: str):
-    """
-    Fetches stops data from url and writes it to compressed csv file.
-
-    Args:
-        url (str): url to fetch data from
-        file (str): path of file to write to
-    """
-    try:
-        response = requests.get(url, stream=True)
-    except requests.exceptions.RequestException as e:
-        raise RuntimeError(e)
-
-    with gzip.open(file, "wb") as f:
-        for chunk in response.iter_content(chunk_size=1024):
-            f.write(chunk)
+from api_database.fetch_db_file import fetch_file
 
 
 def convert_bng(easting, northing) -> tuple[float, float]:
@@ -81,7 +63,7 @@ def setup_stop_database(
     ]
 
     if not os.path.isfile(stop_file):
-        fetch_stops_file(stop_url, stop_file)
+        fetch_file(stop_url, stop_file)
 
     data = (
         pl.scan_csv(stop_file, encoding=stop_encoding, infer_schema_length=None)

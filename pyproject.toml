@@ -7,7 +7,7 @@ name = "openBusAPI"
 description = "A Python API interface for the open Bus service API"
 requires-python = ">= 3.10"
 authors = [{ name = "Z M Williams", email = "z.m.will@icloud.com" }]
-version = "0.4.3"
+version = "0.4.4"
 readme = "README.md"
 license = { file = "LICENSE" }
 dependencies = [

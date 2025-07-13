@@ -1,9 +1,10 @@
+import os
 import sqlite3
 
 import pandas as pd
 from xml.etree import ElementTree
-from tools import api_output
 
+from api_database.fetch_db_file import fetch_file
 
 def get_record(tree: ElementTree.Element) -> dict:
     """
@@ -55,17 +56,18 @@ def setup_table(tree: ElementTree.Element, conn: sqlite3.Connection):
     df.to_sql(tree.tag, conn, if_exists="replace", index=False)
 
 
-def initialise_operator_db(conn: sqlite3.Connection, url: str, encoding: str):
+def initialise_operator_db(
+    conn: sqlite3.Connection, filepath: str, encoding: str
+):
     """
     Initialises the database by downloading the data from the specified url
 
     Args:
         conn (sqlite3.Connection): Connection to the database
-        url (str): URL of the database
+        filepath (str): Path to the operator data file
         encoding (str): Expected encoding of the data
     """
-    output = api_output(url)
-    root = ElementTree.fromstring(output.decode(encoding))
+    root = ElementTree.parse(filepath).getroot()
 
     for tree in root:
         setup_table(tree, conn)
@@ -73,8 +75,9 @@ def initialise_operator_db(conn: sqlite3.Connection, url: str, encoding: str):
 
 def setup_operator_database(
     conn: sqlite3.Connection,
-    operator_url="https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml",
-    operator_encoding="windows-1252",
+    operator_filepath: str = "nocrecords.xml.gz",
+    operator_url: str = "https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml",
+    operator_encoding: str = "windows-1252",
     **kwargs,
 ):
     """
@@ -82,9 +85,13 @@ def setup_operator_database(
 
     Args:
         conn (sqlite3.Connection): Connection to the database
+        operator_filepath (str): Path to the operator file. Defaults to "nocrecords.xml.gz"
         operator_url (str, optional): URL for operator XML data. Defaults to "https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml".
         operator_encoding (str, optional): Encoding for the XML file. Defaults to "windows-1252".
     """
+    if not os.path.isfile(operator_filepath):
+        fetch_file(operator_url, operator_filepath)
 
-    initialise_operator_db(conn, operator_url, operator_encoding)
+
+    initialise_operator_db(conn, operator_filepath, operator_encoding)
     print("-- Operator database initialised")
