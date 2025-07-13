@@ -26,6 +26,16 @@ in order to run the interface, I recommend the fantastic
 [uv package manager](https://docs.astral.sh/uv),
 which can be used to run the API directly with:
 ```shell
-uv run open_bus_api
+  uv run open_bus_api
 ```
 
+## Dependencies
+
+- [Flask API](https://flask.palletsprojects.com/en/stable/) - API framework
+- [Pandas](https://pandas.pydata.org) - Converting XML data to SQL
+- [Polars](https://pola.rs) - Querying databases
+- [BNG-latlon](https://github.com/fmalina/blocl-bnglatlon) - Converting British National Grid coordinates to Latitude and longitude
+- [xmlschema](https://xmlschema.readthedocs.io/en/latest/index.html) - Verifying XML data
+- [jsonschema](https://github.com/python-jsonschema/jsonschema) - Verifying JSON data
+- [jsonschema-default](https://github.com/mnboos/jsonschema-default) - For creating a default object from a JSON schema
+- [toml](https://github.com/uiri/toml) - For parsing TOML files
