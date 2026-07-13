@@ -32,7 +32,7 @@ jobs:
         python-version: ${{matrix.python-version}}
 
     - name: Setup dependencies
-      run: uv sync --extra dev
+      run: uv sync --group dev
 
     - name: Run tests
       env:

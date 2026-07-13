@@ -7,7 +7,7 @@ build:
   jobs:
     pre_build:
       - python -m pip install --upgrade --no-cache-dir pip-tools
-      - pip-compile --extra doc --output-file=docs/requirements.txt pyproject.toml
+      - pip-compile --group doc --output-file=docs/requirements.txt pyproject.toml
       - python -m pip install --exists-action=w --no-cache-dir -r docs/requirements.txt
       - echo -n a_fake_api_key > docs/api_key
 
