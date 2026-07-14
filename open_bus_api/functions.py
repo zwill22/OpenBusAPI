@@ -125,7 +125,7 @@ def setup_operators_info_page(conn: Connection) -> Markup:
     <h1>Operators data</h1>
 
     <ul>
-        <li>{"</li>\n<li>".join(operators)}</li>
+        <li>{"</li><li>".join(operators)}</li>
     </ul>
     """
     return Markup(operators_data)
