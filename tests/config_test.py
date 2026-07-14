@@ -27,10 +27,10 @@ def test_config():
 
     config_path = os.path.abspath("config.json")
     if not os.path.exists(config_path):
-        config = Config(args=[])
+        config = Config()
         check_default_config(config)
 
-    config = Config(args=["fake_config_file.json"])
+    config = Config(config_file="fake_config_file.json")
     check_default_config(config)
 
     for reinitialisation_value in [True, False]:
