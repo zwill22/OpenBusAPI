@@ -15,11 +15,14 @@ from open_bus_api.functions import (
     fetch_stops_code_data,
 )
 
-args = []
-if __name__ == "__main__":
-    args = None
+from open_bus_api.parser import parse_cmdline
 
-config = Config(args=args)
+config_file = "config.json"
+if __name__ == "__main__":
+    args = parse_cmdline()
+    config_file = args.config_file
+
+config = Config(config_file=config_file)
 
 app = Flask(config.name)
 CORS(app)
