@@ -50,6 +50,20 @@ which can be used to run the API directly with:
 - [jsonschema-default](https://github.com/mnboos/jsonschema-default) - For creating a default object from a JSON schema
 - [toml](https://github.com/uiri/toml) - For parsing TOML files
 
+## API
+
+The Open Bus API provides the following endpoints:
+
+| Endpoint                                                                     | Description                                                    |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| /                                                                            | The index page                                                 |
+| /version                                                                     | Returns the current version of the API                         |
+| /location/area/_min_latitude_/_min_longitude_/_max_latitude_/_max_longitude_ | Location data on vehicles within the area provided             |
+| /location/vehicle/_vehicle_id_                                               | Location data on the vehicle with id _vehicle_id_              |
+| /operators/data                                                              | Fetch the vehicle operator database in JSON format             |
+| /operators/info/list                                                         | Provides a summary of the data fields in the operator database |
+| /stops/area/_min_latitude_/_min_longitude_/_max_latitude_/_max_longitude_    | Data on transport stops within the area provided               |
+
 <!-- Badges -->
 
 [python-badge]: https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=fff&style=for-the-badge
