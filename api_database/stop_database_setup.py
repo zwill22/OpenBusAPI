@@ -44,9 +44,18 @@ def get_stop_data(stop_file: str, stop_encoding: str) -> pl.DataFrame:
         "Long",
     ]
 
+    if stop_encoding != "utf8":
+        raise KeyError("Invalid encoding for CSV")
+
     data = (
-        pl.scan_csv(stop_file, encoding=stop_encoding, infer_schema_length=None)
+        pl.scan_csv(stop_file, infer_schema_length=None)
         .filter(pl.col("Status") == "active")
+        .with_columns(
+            pl.col("Easting").cast(pl.String).str.strip_chars().cast(pl.Int64)
+        )
+        .with_columns(
+            pl.col("Northing").cast(pl.String).str.strip_chars().cast(pl.Int64)
+        )
         .with_columns(
             pl.struct("Easting", "Northing")
             .map_elements(
@@ -87,8 +96,8 @@ def setup_stop_database(
     if not os.path.isfile(stop_file):
         fetch_file(stop_url, stop_file)
 
-    data = get_stop_data(stop_file, stop_encoding)
+    data = get_stop_data(stop_file, stop_encoding, **kwargs)
 
-    data.collect().to_pandas().to_sql("Stops", conn, if_exists="replace", index=False)
+    data.to_pandas().to_sql("Stops", conn, if_exists="replace", index=False)
 
     print("-- Stops database initialised")

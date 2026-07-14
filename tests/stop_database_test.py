@@ -20,4 +20,4 @@ def test_sample_stop_data():
     file = os.path.join("static", "sample_stops.csv")
     df = get_stop_data(file, "utf8")
 
-    print(df)
+    assert df.shape == (460, 26)
