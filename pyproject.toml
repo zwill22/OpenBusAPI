@@ -47,6 +47,7 @@ dev = [
     "coverage>=7.8.0",
     "ruff>=0.11.8",
     "beautifulsoup4>=4.13.4",
+    "pytest-cov>=7.1.0",
 ]
 numba = ["numba>=0.61.2"]
 doc = ["sphinx>=7.3.7", "sphinx-rtd-theme>=2.0", "myst-parser>=4.0"]
