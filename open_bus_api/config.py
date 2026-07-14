@@ -173,8 +173,13 @@ class Config:
 
         self.name = data["name"]
         self.version = version_str()
+        self.dev = data["dev"]
         print_config("API Name", self.name, newline=True)
         print_config("Version", self.version, newline=False)
+        if self.dev:
+            print_config("Mode", "Development")
+        else:
+            print_config("Mode", "Production")
 
         self.database_filepath = os.path.abspath(data["database_file"])
         print_config("Database file", self.database_filepath, newline=True)
