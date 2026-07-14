@@ -44,6 +44,10 @@ def database_setup(config: Config):
     print_footer()
 
 
+def markdown_to_html(input: str) -> str:
+    return markdown.markdown(input, extensions=["pymdownx.superfences", "tables"])
+
+
 def index_page() -> str:
     """
     Renders the index page
@@ -53,7 +57,7 @@ def index_page() -> str:
     with open("README.md") as f:
         text = f.read()
 
-    html_string = markdown.markdown(text, extensions=["pymdownx.superfences", "tables"])
+    html_string = markdown_to_html(text)
     html = Markup(html_string)
 
     return render_template("index.html", title="Open Bus API Index Page", inner=html)
