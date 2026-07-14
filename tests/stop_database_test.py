@@ -25,6 +25,9 @@ def test_sample_stop_data():
     df = get_stop_data(file, "utf8")
 
     assert df.shape == (460, 26)
+    
+    with pytest.raises(KeyError):
+        get_stop_data(file, "utf16")
 
 
 def test_sample_stop_database(tmp_path):
