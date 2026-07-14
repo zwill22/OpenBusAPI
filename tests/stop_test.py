@@ -33,7 +33,7 @@ keys = [
 
 
 def test_stop():
-    config = open_bus_api.config.Config()
+    config = open_bus_api.config.Config(args=[])
     conn = setup_database(config.database_filepath)
 
     data = fetch_stops.get_stops(conn, 53.0, -3.05, 53.05, -3.04)
@@ -46,7 +46,7 @@ def test_stop():
 
 
 def test_stop_code():
-    config = open_bus_api.config.Config()
+    config = open_bus_api.config.Config(args=[])
     conn = setup_database(config.database_filepath)
 
     codes = ["wregpjd", "wregtmd", "wregtmt", "wregdat", "wregawg"]
