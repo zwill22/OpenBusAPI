@@ -35,7 +35,7 @@ def get_stops(
     return df.write_json()
 
 
-def get_stops_code(conn: sqlite3.Connection, codes: list[str], **kwargs):
+def get_stops_code(conn: sqlite3.Connection, codes: list[str]):
     """
     Return all stops in the requested area
 

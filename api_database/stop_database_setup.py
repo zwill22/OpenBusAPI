@@ -21,7 +21,7 @@ def convert_bng(easting, northing) -> tuple[float, float]:
     return convert_bng_to_latlon(easting, northing)
 
 
-def get_stop_data(stop_file: str, stop_encoding: str) -> pl.DataFrame:
+def get_stop_data(stop_file: str, stop_encoding: str, **kwargs) -> pl.DataFrame:
     drop_cols = [
         "CleardownCode",
         "CommonNameLang",
@@ -51,10 +51,10 @@ def get_stop_data(stop_file: str, stop_encoding: str) -> pl.DataFrame:
         pl.scan_csv(stop_file, infer_schema_length=None)
         .filter(pl.col("Status") == "active")
         .with_columns(
-            pl.col("Easting").cast(pl.String).str.strip_chars().cast(pl.Int64)
+            pl.col("Easting").str.strip_chars().cast(pl.Int64)
         )
         .with_columns(
-            pl.col("Northing").cast(pl.String).str.strip_chars().cast(pl.Int64)
+            pl.col("Northing").str.strip_chars().cast(pl.Int64)
         )
         .with_columns(
             pl.struct("Easting", "Northing")

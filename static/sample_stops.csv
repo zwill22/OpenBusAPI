@@ -15,7 +15,7 @@ ATCOCode,NaptanCode,PlateCode,CleardownCode,CommonName,CommonNameLang,ShortCommo
 0100AVONMTH0,,,,Avonmouth Rail Station,,,,,,,,,,Entrance,,,E0035565,Avonmouth,Bristol,,,,,,false,UKOS,351528,178175,-2.6997,51.50042,RSE,,,,,,009,2015-11-11T00:00:00,2025-09-10T09:26:20,73,new,active
 0100AVONMTH1,,,,Avonmouth Rail Station,,,,,,,,,,Entrance,,,E0035565,Avonmouth,Bristol,,,,,,false,UKOS,351564,178159,-2.69918,51.50028,RSE,,,,,,009,2025-06-16T00:00:00,2025-09-10T09:24:42,78,new,active
 0100BDMNSTR0,,,,Bedminster Rail Station,,,,,,,,,,Entrance,,,E0035570,Bedminster,Bristol,,,,,,false,UKOS,358747,171381,-2.59491,51.43991,RSE,,,,,,009,2015-11-11T00:00:00,2025-08-18T16:10:20,10,new,active
-0100BRSTLTM0,,,,Bristol Temple Meads Rail Station,,,,,,,,,,Entrance,,,E0057160,Bristol,,,,,,,true,UKOS,359714,172455,-2.58112,51.44964,RSE,,,,,,009,2015-11-11T00:00:00,2025-08-27T15:55:34,9,new,active
+0100BRSTLTM0,,,,Bristol Temple Meads Rail Station,,,,,,,,,,Entrance,,,E0057160,Bristol,,,,,,,true,UKOS, 359714, 172455,-2.58112,51.44964,RSE,,,,,,009,2015-11-11T00:00:00,2025-08-27T15:55:34,9,new,active
 0100CLFDOWN0,,,,Clifton Down Rail Station,,,,,,,,,,Entrance,,,N0077028,Clifton Down,Bristol,,,,,,false,UKOS,357553,174126,-2.61242,51.4645,RSE,,,,,,009,2015-11-11T00:00:00,2025-09-09T14:59:12,22,new,active
 0100CLFDOWN1,,,,Clifton Down Rail Station,,,,,,,,,,Entrance,,,N0077028,Clifton Down,Bristol,,,,,,false,UKOS,357678,174160,-2.61062,51.46482,RSE,,,,,,009,2025-09-09T00:00:00,2025-09-09T14:38:46,23,new,active
 0100CLFDOWN2,,,,Clifton Down Rail Station,,,,,,,,,,Entrance,,,N0077028,Clifton Down,Bristol,,,,,,false,UKOS,357693,174125,-2.6104,51.4645,RSE,,,,,,009,2025-09-09T00:00:00,2025-09-09T14:54:47,30,new,active
