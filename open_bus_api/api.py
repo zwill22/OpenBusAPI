@@ -4,7 +4,7 @@ from flask_cors import CORS
 from open_bus_api.config import Config
 
 from open_bus_api.functions import (
-    fetch_index,
+    index_page,
     location_data,
     vehicle_location_data,
     operators_data,
@@ -31,7 +31,7 @@ def index():
 
     Returns: Index page
     """
-    return fetch_index()
+    return index_page()
 
 
 @app.route("/version")
