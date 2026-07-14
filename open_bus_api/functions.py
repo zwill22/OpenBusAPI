@@ -1,5 +1,7 @@
 from flask import render_template
 
+import markdown
+from markupsafe import Markup
 from .config import Config, print_footer
 from tools import get_location_url, api_output, get_base_url, version_str
 from api_database import (
@@ -9,6 +11,8 @@ from api_database import (
     get_stops,
     get_stops_code,
 )
+
+from sqlite3 import Connection
 
 
 def get_version() -> str:
@@ -40,13 +44,23 @@ def database_setup(config: Config):
     print_footer()
 
 
-def fetch_index() -> str:
+def markdown_to_html(input: str) -> str:
+    return markdown.markdown(input, extensions=["pymdownx.superfences", "tables"])
+
+
+def index_page() -> str:
     """
     Renders the index page
 
     Returns: The index page
     """
-    return render_template("index.html")
+    with open("README.md") as f:
+        text = f.read()
+
+    html_string = markdown_to_html(text)
+    html = Markup(html_string)
+
+    return render_template("index.html", title="Open Bus API Index Page", inner=html)
 
 
 def location_data(
@@ -96,6 +110,27 @@ def operators_data(path: str) -> str:
     return fetch_operators_data(conn)
 
 
+def setup_operators_info_page(conn: Connection) -> Markup:
+    """
+    Renders a list of the operators data as HTML Markup
+
+    conn (Connection): Database connection
+
+    Returns: The operators data list as HTML
+    """
+
+    operators = operators_info(conn)
+
+    operators_data = f"""
+    <h1>Operators data</h1>
+
+    <ul>
+        <li>{"</li><li>".join(operators)}</li>
+    </ul>
+    """
+    return Markup(operators_data)
+
+
 def operators_info_list(path: str) -> str:
     """
     Returns a summary of the contents of the operators database
@@ -104,9 +139,13 @@ def operators_info_list(path: str) -> str:
 
     Returns: Page describing the contents of the operators database
     """
-    template_name = "operator_data.html"
     conn = setup_database(path)
-    return render_template(template_name, columns=operators_info(conn))
+
+    operators_data = setup_operators_info_page(conn)
+
+    return render_template(
+        "index.html", title="Open Bus API - Operator Data", inner=operators_data
+    )
 
 
 def fetch_stops_data(

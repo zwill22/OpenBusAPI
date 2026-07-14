@@ -2,7 +2,8 @@ import os
 import json
 import jsonschema
 import jsonschema_default
-import argparse
+
+from pathlib import Path
 
 from tools import version_str
 from tools.printer import print_config
@@ -42,31 +43,6 @@ class APIKey:
         print_config(*self.message, newline=True)
 
 
-def parse_cmdline(args=None) -> argparse.Namespace:
-    """
-    Parse commandline arguments and return an argparse.Namespace
-
-    Args:
-        args (list, optional): Arguments to parse directly
-
-    Returns: Argparse Namespace
-    """
-    parser = argparse.ArgumentParser(
-        prog="OpenBusAPI",
-        description="""
-        Welcome to the OpenBusAPI which provides an interface to bus data for the
-        BusTracker App.
-        """,
-        epilog="Diolch yn fawr iawn.",
-    )
-
-    parser.add_argument(
-        "config", help="Filepath for config file", nargs="?", default="config.json"
-    )
-
-    return parser.parse_args(args=args)
-
-
 def json_load(file: str) -> dict:
     """
     Read JSON file to dictionary
@@ -101,25 +77,6 @@ def load_json(file):
         data = {}
 
     return data
-
-
-def load_config_data(args):
-    """
-    Parse command line arguments for config file name and
-    read the config file to dictionary
-    Args:
-        args (list, optional): Arguments to parse directly
-
-    Returns: Config dictionary
-    """
-    try:
-        options = parse_cmdline(args=args)
-    except SystemExit:
-        raise RuntimeError("Unable to parse command line options")
-
-    file = os.path.abspath(options.config)
-
-    return load_json(file)
 
 
 def validate_config(input_data: dict, schema: dict):
@@ -157,53 +114,77 @@ class Config:
     """
 
     def __init__(
-        self, args=None, schema_file="config.schema.json", schema_dir="static", **kwargs
+        self,
+        config_file: str | Path | None = None,
+        schema_file: str = "config.schema.json",
+        schema_dir: str = "static",
+        **kwargs,
     ):
         print_header()
-        if not kwargs:
-            data = load_config_data(args)
+        if not kwargs and config_file:
+            options = load_json(config_file)
         else:
-            data = kwargs
+            options = kwargs
 
         self.line_length = 100
 
         schema_path = os.path.join(schema_dir, schema_file)
         schema = json_load(schema_path)
-        validate_config(data, schema)
+        validate_config(options, schema)
 
-        self.name = data["name"]
+        self.name = options["name"]
         self.version = version_str()
+        self.dev = options["dev"]
         print_config("API Name", self.name, newline=True)
         print_config("Version", self.version, newline=False)
+        if self.dev:
+            print_config("Mode", "Development")
+        else:
+            print_config("Mode", "Production")
 
-        self.database_filepath = os.path.abspath(data["database_file"])
+        self.database_filepath = os.path.abspath(options["database_file"])
         print_config("Database file", self.database_filepath, newline=True)
 
-        self.reinitialise = data["reinitialise"]
+        self.reinitialise = options["reinitialise"]
         if self.reinitialise:
             print("--> Database will be reinitialised")
 
-        self.bus_data_url = data["bus_data_url"]
+        self.bus_data_url = options["bus_data_url"]
         print_config("Bus Data URL", self.bus_data_url, newline=False)
-        api_key_env = data["api_key_env"]
-        api_key_filepath = os.path.abspath(data["api_key_file"])
+        api_key_env = options["api_key_env"]
+        api_key_filepath = os.path.abspath(options["api_key_file"])
         self.api_key = APIKey(api_key_env, api_key_filepath)
         self.api_key.print_message()
 
-        self.operator_database_url = data["operator_database_url"]
-        self.operator_database_encoding = data["operator_database_encoding"]
-        print_config("Operator Database URL", self.operator_database_url, newline=True)
-        print_config("Operator Database encoding", self.operator_database_encoding)
-
-        self.stop_database_filepath = os.path.abspath(data["stop_database_file"])
-        self.stop_database_url = data["stop_database_url"]
-        self.stop_database_encoding = data["stop_database_encoding"]
-        if os.path.exists(self.stop_database_filepath):
+        # TODO Change database to data file when referring to an xml/json/csv file
+        self.operator_database_filepath = os.path.abspath(
+            options["operator_database_file"]
+        )
+        self.operator_database_url = options["operator_database_url"]
+        self.operator_database_encoding = options["operator_database_encoding"]
+        if os.path.exists(self.operator_database_filepath):
             print_config(
-                "Stop Database Filepath", self.stop_database_filepath, newline=True
+                "Operator Database Filepath",
+                self.operator_database_filepath,
+                newline=True,
             )
         else:
-            print("\nStop database file not found, will create it")
-            print_config("Stop database URL", self.stop_database_url)
-            print_config("Stop database save filepath", self.stop_database_filepath)
-        print_config("Stop database encoding", self.stop_database_encoding)
+            print("\nOperator data file not found, will download it")
+            print_config("Operator data file URL", self.operator_database_url)
+            print_config(
+                "Operator data file save path", self.operator_database_filepath
+            )
+        print_config("Operator data file encoding", self.operator_database_encoding)
+
+        self.stop_database_filepath = os.path.abspath(options["stop_database_file"])
+        self.stop_database_url = options["stop_database_url"]
+        self.stop_database_encoding = options["stop_database_encoding"]
+        if os.path.exists(self.stop_database_filepath):
+            print_config(
+                "Stop data filepath", self.stop_database_filepath, newline=True
+            )
+        else:
+            print("\nStop data file not found, will download it")
+            print_config("Stop data file URL", self.stop_database_url)
+            print_config("Stop data file save path", self.stop_database_filepath)
+        print_config("Stop data file encoding", self.stop_database_encoding)

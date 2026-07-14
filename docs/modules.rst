@@ -1,9 +1,7 @@
-open_bus_api
+api_database
 ============
 
 .. toctree::
    :maxdepth: 4
 
-   open_bus_api
-   operators
-   tools
+   api_database

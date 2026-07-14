@@ -7,7 +7,7 @@ name = "openBusAPI"
 description = "A Python API interface for the open Bus service API"
 requires-python = ">= 3.10"
 authors = [{ name = "Z M Williams", email = "z.m.will@icloud.com" }]
-version = "0.4.3"
+version = "0.4.4"
 readme = "README.md"
 license = { file = "LICENSE" }
 dependencies = [
@@ -21,7 +21,9 @@ dependencies = [
     "pyarrow>=20.0.0",
     "toml>=0.10.2",
     "jsonschema>=4.23.0",
-    "bng-latlon>=1.1"
+    "bng-latlon>=1.1",
+    "markdown>=3.10.2",
+    "pymdown-extensions>=11.0.1",
 ]
 keywords = ["Python", "API", "Flask", "OpenBus", "BusTracker"]
 classifiers = [
@@ -31,28 +33,24 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13"
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 
 [project.urls]
 repository = "https://github.com/zwill22/OpenBusAPI"
 documentation = "https://openbusapi.readthedocs.io/en/latest/"
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "pytest>=8.3.5",
     "coverage>=7.8.0",
     "ruff>=0.11.8",
     "beautifulsoup4>=4.13.4",
+    "pytest-cov>=7.1.0",
 ]
-numba = [
-    "numba>=0.61.2",
-]
-doc = [
-    "sphinx>=7.3.7",
-    "sphinx-rtd-theme>=2.0",
-    "myst-parser>=4.0",
-]
+numba = ["numba>=0.61.2"]
+doc = ["sphinx>=7.3.7", "sphinx-rtd-theme>=2.0", "myst-parser>=4.0"]
 
 [tool.flit.module]
 name = "open_bus_api"
@@ -60,9 +58,7 @@ name = "open_bus_api"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-testpaths = [
-    "tests"
-]
+testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 88

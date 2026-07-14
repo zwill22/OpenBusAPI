@@ -1,7 +1,11 @@
 import requests
 
 
-def api_output(feed_url: str) -> bytes:
+def get_request(url: str):
+    return requests.get(url)
+
+
+def api_output(feed_url: str, get_fn=get_request) -> bytes:
     """
     Returns the content of a URL
 
@@ -11,7 +15,7 @@ def api_output(feed_url: str) -> bytes:
     Returns: Content of URL in bytes
     """
     try:
-        r = requests.get(feed_url)
+        r = get_fn(feed_url)
     except requests.exceptions.ConnectionError:
         raise LookupError(503)
 

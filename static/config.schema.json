@@ -23,6 +23,12 @@
       "type": "string",
       "default": "api_key"
     },
+    "operator_database_file": {
+      "title": "Operator Database File",
+      "description": "Filepath to existing operators XML file, can be xml or compressed (GZ). If the file does not exist, it will be created at this location",
+      "type": "string",
+      "default": "nocrecords.xml.gz"
+    },
     "operator_database_url": {
       "title": "Operator Database URL",
       "description": "URL to XML file containing Operators data",
@@ -70,8 +76,13 @@
       "description": "URL for the bus datafeed.",
       "type": "string",
       "default": "https://data.bus-data.dft.gov.uk/api/v1/datafeed"
+    },
+    "dev": {
+      "title": "Development version",
+      "description": "Run the API in development mode (allow cross-origin requests)",
+      "type": "boolean",
+      "default": true
     }
   },
   "additionalProperties": false
 }
-

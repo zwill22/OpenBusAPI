@@ -4,14 +4,6 @@ tools package
 Submodules
 ----------
 
-tools.location\_reader module
------------------------------
-
-.. automodule:: tools.location_reader
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
 tools.location\_tools module
 ----------------------------
 
@@ -28,10 +20,18 @@ tools.output module
    :show-inheritance:
    :undoc-members:
 
-tools.xml\_tools module
------------------------
+tools.printer module
+--------------------
 
-.. automodule:: tools.xml_tools
+.. automodule:: tools.printer
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+tools.version module
+--------------------
+
+.. automodule:: tools.version
    :members:
    :show-inheritance:
    :undoc-members:

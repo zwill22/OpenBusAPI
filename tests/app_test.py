@@ -1,32 +1,63 @@
 import json
 import pytest
 import polars as pl
-from bs4 import BeautifulSoup
+import re
 
 from io import StringIO
-from open_bus_api.api import app as open_bus_api
+from open_bus_api.__main__ import app
+from open_bus_api.functions import markdown_to_html
 from .analyse_xml import analyse_response
 
 
 def test_index():
-    response = open_bus_api.test_client().get("/")
+    # Index response
+    response = app.test_client().get("/")
     assert response.status_code == 200
 
+    index = response.data.splitlines()
+    index_length = len(index)
+
+    # Template file
     template = []
     with open("templates/index.html") as index_file:
         template = index_file.readlines()
 
-    index_output = response.data.splitlines()
-    index_length = len(index_output)
-    assert len(template) == index_length
-    for i in range(index_length):
+    template_length = len(template)
+
+    # Readme file (as HTML)
+    with open("README.md") as readme_file:
+        readme = readme_file.read()
+
+    readme_html = markdown_to_html(readme)
+    readme_output = readme_html.splitlines()
+    readme_length = len(readme_output)
+
+    print(readme_length)
+
+    assert template_length + readme_length - 1 == index_length
+
+    index_idx = 0
+    for i in range(template_length):
         template_line = template[i].strip()
-        index_line = index_output[i].decode().strip()
-        assert template_line == index_line
+
+        index_line = index[index_idx].decode().strip()
+        if template_line == "<title>{{title}}</title>":
+            assert index_line == "<title>Open Bus API Index Page</title>"
+            index_idx += 1
+        elif template_line == "{{inner}}":
+            for j in range(readme_length):
+                readme_line = readme_output[j].strip()
+                index_line = index[index_idx].decode().strip()
+
+                assert readme_line == index_line
+                index_idx += 1
+        else:
+            assert template_line == index_line
+            index_idx += 1
 
 
 def test_version():
-    response = open_bus_api.test_client().get("/version")
+    response = app.test_client().get("/version")
     assert response.status_code == 200
 
 
@@ -63,7 +94,7 @@ empty_keys = (
 
 @pytest.mark.parametrize("path, output", cases)
 def test_area_data(path, output, schema):
-    response = open_bus_api.test_client().get(path)
+    response = app.test_client().get(path)
     assert response.status_code == output
     if output == 200:
         output = response.data.decode()
@@ -81,7 +112,7 @@ real_data = [
 
 @pytest.mark.parametrize("path, output, n", real_data)
 def test_real_area_data(path, output, n, schema):
-    response = open_bus_api.test_client().get(path)
+    response = app.test_client().get(path)
     assert response.status_code == output
     output = response.data.decode()
     result = analyse_response(output, schema=schema)
@@ -127,7 +158,7 @@ transport_modes = (
 
 
 def test_operator_data():
-    response = open_bus_api.test_client().get("/operators/data")
+    response = app.test_client().get("/operators/data")
     assert response.status_code == 200
     output = response.data.decode()
 
@@ -148,13 +179,17 @@ def test_operator_data():
 
 
 def test_operator_info():
-    response = open_bus_api.test_client().get("/operators/info/list")
+    response = app.test_client().get("/operators/info/list")
     assert response.status_code == 200
     output = response.data.decode()
-    soup = BeautifulSoup(output, features="html.parser")
 
-    for item in soup.find("li"):
-        assert item.text in expected_columns
+    pattern = re.compile(r"<li>(\w+)<\/li>")
+
+    matches = pattern.finditer(output)
+
+    for match_num, match in enumerate(matches, start=1):
+        for group_idx, group in enumerate(match.groups(), start=1):
+            assert group in expected_columns 
 
 
 stop_cases = [
@@ -176,7 +211,7 @@ stop_cases = [
 
 @pytest.mark.parametrize("path, output", stop_cases)
 def test_stop_area_data(path, output):
-    response = open_bus_api.test_client().get(path)
+    response = app.test_client().get(path)
     assert response.status_code == output
     if output == 200:
         data = response.data.decode()
@@ -191,7 +226,7 @@ code_cases = [
 
 @pytest.mark.parametrize("codes, n", code_cases)
 def test_real_stop_area_data(codes, n):
-    response = open_bus_api.test_client().get("/stops/codes/{0}".format(codes))
+    response = app.test_client().get("/stops/codes/{0}".format(codes))
     assert response.status_code == 200
 
     data = response.data.decode()

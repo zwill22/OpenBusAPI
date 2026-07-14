@@ -43,7 +43,7 @@ if __name__ == "__main__":
     from io import StringIO
     from api_database.initialise_database import setup_database
 
-    connection = setup_database()
+    connection = setup_database(path="operators.db")
     json = fetch_operators_data(connection)
 
     out_df = pl.read_json(StringIO(json))
