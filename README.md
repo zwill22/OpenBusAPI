@@ -15,7 +15,7 @@
 [![Documentation Status][docs-badge]][docs]
 [![Buy Me A Coffee][buy-me-a-coffee-badge]][buy-me-a-coffee]
 [![License: MIT][license-badge]][license]
-[![No AI][noai-badge]](#)
+[![No AI][noai-badge]][website]
 
 OpenBusAPI is the backend interface for the
 [BusTracker App](https://github.com/zwill22/BusTracker).
@@ -35,8 +35,8 @@ in order to run the interface, I recommend the fantastic
 [uv package manager](https://docs.astral.sh/uv),
 which can be used to run the API directly with:
 
-```shell
-  uv run open_bus_api
+```sh
+uv run open_bus_api
 ```
 
 ## Dependencies
@@ -100,3 +100,4 @@ The Open Bus API provides the following endpoints:
 [github-actions]: https://github.com/zwill22/OpenBusAPI/actions
 [polars]: https://pola.rs
 [pytest]: https://docs.pytest.org/
+[website]: https://zmwill.uk

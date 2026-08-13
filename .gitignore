@@ -22,3 +22,4 @@ Stops.csv
 /nocrecords.xml.gz
 .DS_Store
 .vscode
+.env

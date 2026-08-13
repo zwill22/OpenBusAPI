@@ -12,16 +12,15 @@
       "default": "OpenBusAPI"
     },
     "api_key_env": {
-      "title": "Environent variable name for API Key",
+      "title": "Environment variable name for API Key",
       "description": "Environment variable which stores the api key",
       "type": "string",
       "default": "OPEN_BUS_API_KEY"
     },
     "api_key_file": {
       "title": "API Key file",
-      "description": "Filepath to plain text file containing the API Key",
       "type": "string",
-      "default": "api_key"
+      "deprecated": true
     },
     "operator_database_file": {
       "title": "Operator Database File",
