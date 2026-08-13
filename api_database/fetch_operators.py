@@ -3,7 +3,7 @@ import sqlite3
 import polars as pl
 
 dir_path = Path(__file__).absolute().parent
-sql_path = dir_path / "operator.sql"
+sql_path = dir_path / "operators.sql"
 
 
 def fetch_operators_data(conn: sqlite3.Connection) -> str:

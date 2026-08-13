@@ -7,7 +7,7 @@ import jsonschema_default
 from dotenv import load_dotenv
 from jsonschema.exceptions import ValidationError
 
-from tools import version_str
+from tools import version_str, get_root
 from tools.printer import print_config
 
 load_dotenv()
@@ -26,7 +26,7 @@ class APIKey:
         _api_key = os.getenv(env)
         if not _api_key:
             raise EnvironmentError(
-                "No API key found. Environment variable {env} not set!"
+                f"No API key found. Environment variable {env} not set!"
             )
 
         self._api_key_ = _api_key.strip()
@@ -95,7 +95,10 @@ def validate_config(input_data: dict, schema: dict):
 
 def print_header():
     logo = ""
-    with open("static/logo.txt", "r") as f:
+    
+    logo_path = get_root() / "static" / "logo.txt"
+    
+    with open(logo_path, "r") as f:
         logo = f.read()
     print()
     print(logo)
@@ -114,7 +117,7 @@ class Config:
         self,
         config_file: Path | None = None,
         schema_file: str = "config.schema.json",
-        schema_dir: Path = Path("static").absolute(),
+        schema_dir: Path = get_root() / "static",
         **kwargs,
     ):
         print_header()

@@ -1,13 +1,14 @@
-from io import StringIO
 import os
-from pathlib import Path
 import sqlite3
-import pytest
+from io import StringIO
+
 import polars as pl
+import pytest
 
 from api_database.fetch_db_file import fetch_file
 from api_database.fetch_stops import get_stops
 from api_database.stop_database_setup import get_stop_data, setup_stop_database
+from tools import get_root
 
 
 def test_fetch_stops_file(tmp_path):
@@ -22,7 +23,7 @@ def test_fetch_stops_file(tmp_path):
 
 
 def test_sample_stop_data():
-    file = Path("static") / "sample_stops.csv"
+    file = get_root() / "static" / "sample_stops.csv"
     df = get_stop_data(file, "utf8")
 
     assert df.shape == (460, 26)
@@ -32,7 +33,7 @@ def test_sample_stop_data():
 
 
 def test_sample_stop_database(tmp_path):
-    file = Path("static") / "sample_stops.csv"
+    file = get_root() / "static" / "sample_stops.csv"
     db = tmp_path / "stop.db"
 
     conn = sqlite3.Connection(db)

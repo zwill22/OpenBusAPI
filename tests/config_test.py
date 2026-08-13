@@ -19,7 +19,10 @@ def check_default_config(config: Config, reinitialisation_value: bool = False):
 
 
 def test_config():
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(
+        EnvironmentError,
+        match="No API key found. Environment variable RIDICULOUS_ENVIRONMENT_VARIABLE_NAME_ not set!",
+    ):
         Config(
             api_key_env="RIDICULOUS_ENVIRONMENT_VARIABLE_NAME_",
             api_key_file="non_existing_file",
