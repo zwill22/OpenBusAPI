@@ -1,14 +1,16 @@
 import gzip
+from pathlib import Path
+
 import requests
 
 
-def fetch_file(url: str, file: str):
+def fetch_file(url: str, file: Path):
     """
     Fetches stops data from url and writes it to compressed csv file.
 
     Args:
         url (str): url to fetch data from
-        file (str): path of file to write to
+        file (Path): path of file to write to
     """
     try:
         response = requests.get(url, stream=True)

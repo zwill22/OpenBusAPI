@@ -1,7 +1,9 @@
-from io import StringIO
-import os
 import sqlite3
+from io import StringIO
+from pathlib import Path
+
 import polars as pl
+
 from api_database.fetch_operators import fetch_operators_data, operators_info
 from api_database.operators_database_setup import setup_operator_database
 
@@ -11,7 +13,7 @@ def test_operator_database_initialisation(tmp_path):
 
     conn = sqlite3.connect(db)
 
-    operator_file = os.path.join("static", "nocsample.xml")
+    operator_file = Path("static") / "nocsample.xml"
 
     setup_operator_database(conn, operator_filepath=operator_file)
 

@@ -1,7 +1,7 @@
-import os
 import sqlite3
-import polars as pl
+from pathlib import Path
 
+import polars as pl
 from bng_latlon import OSGB36toWGS84 as convert_bng_to_latlon
 
 from api_database.fetch_db_file import fetch_file
@@ -21,7 +21,7 @@ def convert_bng(easting, northing) -> tuple[float, float]:
     return convert_bng_to_latlon(easting, northing)
 
 
-def get_stop_data(stop_file: str, stop_encoding: str, **kwargs) -> pl.DataFrame:
+def get_stop_data(stop_file: Path, stop_encoding: str, **kwargs) -> pl.DataFrame:
     drop_cols = [
         "CleardownCode",
         "CommonNameLang",
@@ -50,12 +50,8 @@ def get_stop_data(stop_file: str, stop_encoding: str, **kwargs) -> pl.DataFrame:
     data = (
         pl.scan_csv(stop_file, infer_schema_length=None)
         .filter(pl.col("Status") == "active")
-        .with_columns(
-            pl.col("Easting").str.strip_chars().cast(pl.Int64)
-        )
-        .with_columns(
-            pl.col("Northing").str.strip_chars().cast(pl.Int64)
-        )
+        .with_columns(pl.col("Easting").str.strip_chars().cast(pl.Int64))
+        .with_columns(pl.col("Northing").str.strip_chars().cast(pl.Int64))
         .with_columns(
             pl.struct("Easting", "Northing")
             .map_elements(
@@ -76,7 +72,7 @@ def get_stop_data(stop_file: str, stop_encoding: str, **kwargs) -> pl.DataFrame:
 
 def setup_stop_database(
     conn: sqlite3.Connection,
-    stop_file: str = "Stops.csv.gz",
+    stop_file: Path = Path("Stops.csv.gz"),
     stop_url: str = "https://naptan.api.dft.gov.uk/v1/access-nodes?dataFormat=csv",
     stop_encoding: str = "utf8",
     **kwargs,
@@ -88,12 +84,12 @@ def setup_stop_database(
 
     Args:
         conn (sqlite3.Connection): Connection to the database
-        stop_file (str, optional): Path to the stops file. Defaults to "Stops.csv.gz".
+        stop_file (Path, optional): Path to the stops file. Defaults to "Stops.csv.gz".
         stop_url (str, optional): URL for the Stop data in CSV format. Defaults to "".
         stop_encoding (str, optional): Encoding of the CSV file. Defaults to "UTF-8".
     """
 
-    if not os.path.isfile(stop_file):
+    if not stop_file.is_file():
         fetch_file(stop_url, stop_file)
 
     data = get_stop_data(stop_file, stop_encoding, **kwargs)

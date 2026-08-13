@@ -1,26 +1,26 @@
+from pathlib import Path
+
 from flask import Flask
 from flask_cors import CORS
 
 from open_bus_api.config import Config
-
 from open_bus_api.functions import (
+    database_setup,
+    fetch_stops_code_data,
+    fetch_stops_data,
+    get_version,
     index_page,
     location_data,
-    vehicle_location_data,
     operators_data,
     operators_info_list,
-    database_setup,
-    get_version,
-    fetch_stops_data,
-    fetch_stops_code_data,
+    vehicle_location_data,
 )
-
 from open_bus_api.parser import parse_cmdline
 
-config_file = "config.json"
+config_file = Path("config.json")
 if __name__ == "__main__":
     args = parse_cmdline()
-    config_file = args.config_file
+    config_file = Path(args.config_file)
 
 config = Config(config_file=config_file)
 
@@ -104,7 +104,7 @@ def get_operators_data():
 @app.route("/operators/info/list")
 def get_operators_info_list():
     """
-    Info page contining details on the fields available
+    Info page containing details on the fields available
     in the operators database
 
     Returns: Operators information page

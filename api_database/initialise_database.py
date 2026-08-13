@@ -1,26 +1,27 @@
-import os.path
 import sqlite3
+from pathlib import Path
 
 from tools import printer
+
 from .operators_database_setup import setup_operator_database
 from .stop_database_setup import setup_stop_database
 
 
 def setup_database(
-    path: str, reinitialise: bool = False, **kwargs
+    path: Path, reinitialise: bool = False, **kwargs
 ) -> sqlite3.Connection:
     """
     Sets up connection to the database, if it exists. Else the database
     is initialised and the connection created
 
     Args:
-        path (str): The (relative) path to the database file.
+        path (Path): The (relative) path to the database file.
         reinitialise (bool, optional): Whether to reinitialise the database regardless of whether it already exists. Defaults to False.
 
     Returns:
         sqlite3.Connection: Connection to the database
     """
-    db_exists = os.path.isfile(path)
+    db_exists = path.is_file()
 
     conn = sqlite3.connect(path)
 
@@ -33,5 +34,6 @@ def setup_database(
 
 
 if __name__ == "__main__":
-    connection = setup_database("example.db", reinitialise=True)
+    path = Path("example.db")
+    connection = setup_database(path, reinitialise=True)
     connection.close()

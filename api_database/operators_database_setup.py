@@ -1,9 +1,9 @@
-import os
 import gzip
 import sqlite3
+from pathlib import Path
+from xml.etree import ElementTree
 
 import pandas as pd
-from xml.etree import ElementTree
 
 from api_database.fetch_db_file import fetch_file
 
@@ -58,8 +58,8 @@ def setup_table(tree: ElementTree.Element, conn: sqlite3.Connection):
     df.to_sql(tree.tag, conn, if_exists="replace", index=False)
 
 
-def read_file(filepath: str) -> bytes:
-    if filepath.endswith(".gz"):
+def read_file(filepath: Path) -> bytes:
+    if filepath.suffixes[-1] == ".gz":
         with gzip.open(filepath, "rb") as file:
             return file.read()
 
@@ -67,13 +67,13 @@ def read_file(filepath: str) -> bytes:
         return file.read()
 
 
-def initialise_operator_db(conn: sqlite3.Connection, filepath: str, encoding: str):
+def initialise_operator_db(conn: sqlite3.Connection, filepath: Path, encoding: str):
     """
     Initialises the database by downloading the data from the specified url
 
     Args:
         conn (sqlite3.Connection): Connection to the database
-        filepath (str): Path to the operator data file
+        filepath (Path): Path to the operator data file
         encoding (str): Expected encoding of the data
     """
     output = read_file(filepath)
@@ -85,7 +85,7 @@ def initialise_operator_db(conn: sqlite3.Connection, filepath: str, encoding: st
 
 def setup_operator_database(
     conn: sqlite3.Connection,
-    operator_filepath: str = "nocrecords.xml.gz",
+    operator_filepath: Path = Path("nocrecords.xml.gz"),
     operator_url: str = "https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml",
     operator_encoding: str = "windows-1252",
     **kwargs,
@@ -95,11 +95,11 @@ def setup_operator_database(
 
     Args:
         conn (sqlite3.Connection): Connection to the database
-        operator_filepath (str): Path to the operator file. Defaults to "nocrecords.xml.gz"
+        operator_filepath (Path, optional): Path to the operator file. Defaults to "nocrecords.xml.gz"
         operator_url (str, optional): URL for operator XML data. Defaults to "https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml".
         operator_encoding (str, optional): Encoding for the XML file. Defaults to "windows-1252".
     """
-    if not os.path.isfile(operator_filepath):
+    if not operator_filepath.is_file():
         fetch_file(operator_url, operator_filepath)
 
     initialise_operator_db(conn, operator_filepath, operator_encoding)

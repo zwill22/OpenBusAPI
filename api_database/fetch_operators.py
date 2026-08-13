@@ -1,9 +1,9 @@
-import os.path
+from pathlib import Path
 import sqlite3
 import polars as pl
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-sql_path = os.path.join(dir_path, "operators.sql")
+dir_path = Path(__file__).absolute().parent
+sql_path = dir_path / "operator.sql"
 
 
 def fetch_operators_data(conn: sqlite3.Connection) -> str:
@@ -43,7 +43,9 @@ if __name__ == "__main__":
     from io import StringIO
     from api_database.initialise_database import setup_database
 
-    connection = setup_database(path="operators.db")
+    path = Path("operators.db")
+
+    connection = setup_database(path)
     json = fetch_operators_data(connection)
 
     out_df = pl.read_json(StringIO(json))

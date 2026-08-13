@@ -1,6 +1,8 @@
 import os
+from pathlib import Path
 
 import pytest
+
 from open_bus_api.config import Config
 
 
@@ -11,7 +13,7 @@ def check_default_config(config: Config, reinitialisation_value: bool = False):
 
     db_url = "https://www.travelinedata.org.uk/noc/api/1.0/nocrecords.xml"
     assert config.operator_database_url == db_url
-    assert config.database_filepath == os.path.abspath("open_bus_database.db")
+    assert config.database_filepath == Path("open_bus_database.db").absolute()
     assert config.reinitialise == reinitialisation_value
     assert config.operator_database_encoding == "windows-1252"
 
@@ -25,12 +27,12 @@ def test_config():
 
     os.environ["OPEN_BUS_API_KEY"] = "FAKE_API_KEY"
 
-    config_path = os.path.abspath("config.json")
-    if not os.path.exists(config_path):
+    config_path = Path("config.json").absolute()
+    if not config_path.exists():
         config = Config()
         check_default_config(config)
 
-    config = Config(config_file="fake_config_file.json")
+    config = Config(config_file=Path("fake_config_file.json"))
     check_default_config(config)
 
     for reinitialisation_value in [True, False]:

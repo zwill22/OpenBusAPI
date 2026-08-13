@@ -29,7 +29,9 @@ def fetch_schema(
         return schema
 
 
-def validate_xml(xml_str: str, schema: xmlschema.XMLSchema = None, **kwargs) -> bool:
+def validate_xml(
+    xml_str: str, schema: xmlschema.XMLSchema | None = None, **kwargs
+) -> bool:
     """
     Validates XML against a schema
 

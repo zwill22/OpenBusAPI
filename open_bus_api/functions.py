@@ -1,18 +1,20 @@
-from flask import render_template
+from pathlib import Path
+from sqlite3 import Connection
 
 import markdown
+from flask import render_template
 from markupsafe import Markup
-from .config import Config, print_footer
-from tools import get_location_url, api_output, get_base_url, version_str
+
 from api_database import (
-    setup_database,
     fetch_operators_data,
-    operators_info,
     get_stops,
     get_stops_code,
+    operators_info,
+    setup_database,
 )
+from tools import api_output, get_base_url, get_location_url, version_str
 
-from sqlite3 import Connection
+from .config import Config, print_footer
 
 
 def get_version() -> str:
@@ -98,11 +100,11 @@ def vehicle_location_data(vehicle_id: str, **kwargs) -> bytes:
     return api_output(feed_url)
 
 
-def operators_data(path: str) -> str:
+def operators_data(path: Path) -> str:
     """
     Fetches the operators database
 
-    path (str): Path to the database
+    path (Path): Path to the database
 
     Returns: The operators data in JSON format
     """
@@ -131,11 +133,11 @@ def setup_operators_info_page(conn: Connection) -> Markup:
     return Markup(operators_data)
 
 
-def operators_info_list(path: str) -> str:
+def operators_info_list(path: Path) -> str:
     """
     Returns a summary of the contents of the operators database
 
-    path (str): Path to the database
+    path (Path): Path to the database
 
     Returns: Page describing the contents of the operators database
     """
@@ -149,13 +151,13 @@ def operators_info_list(path: str) -> str:
 
 
 def fetch_stops_data(
-    path, min_lat: float, min_long: float, max_lat: float, max_long: float
+    path: Path, min_lat: float, min_long: float, max_lat: float, max_long: float
 ) -> str:
     """
     Fetches the stops data on vehicles in the provided area from the database
 
     Args:
-        path (str): Path to the database
+        path (Path): Path to the database
         min_lat (float): Minimum latitude
         min_long (float): Minimum longitude
         max_lat (float): Maximum latitude
@@ -167,12 +169,12 @@ def fetch_stops_data(
     return get_stops(conn, min_lat, min_long, max_lat, max_long)
 
 
-def fetch_stops_code_data(path, codes: str) -> str:
+def fetch_stops_code_data(path: Path, codes: str) -> str:
     """
     Fetches the stops data on vehicles in the provided area from the database
 
     Args:
-        path (str): Path to the database
+        path (Path): Path to the database
         codes (str): List of comma separated codes in string format
 
     Returns: Stops data in JSON format
