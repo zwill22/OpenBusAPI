@@ -2,45 +2,40 @@ import os
 import json
 import jsonschema
 import jsonschema_default
-
-from pathlib import Path
+from dotenv import load_dotenv
+from jsonschema.exceptions import ValidationError
 
 from tools import version_str
 from tools.printer import print_config
+
+load_dotenv()
 
 
 class APIKey:
     """
     Class to manage access to the Open Bus data API key.
-    First it searches for a key in the system environment.
-    Second it searches for a key in an `api_file`. If no
-    key is found, an error occurs.
+
+    It searches for an environment variable with the name
+    provided in the config, if it cannot find it, an
+    error is thrown.
     """
 
-    def __init__(self, api_env, api_file):
-        _api_key = os.getenv(api_env)
-        if _api_key:
-            self.message = ("API Key found from environment", api_env)
-        else:
-            _api_key = ""
-            with open(api_file, "r") as f:
-                _api_key += f.read()
-            self.message = ("API Key loaded from file", api_file)
+    def __init__(self, env: str):
+        _api_key = os.getenv(env)
+        if not _api_key:
+            raise EnvironmentError(
+                "No API key found. Environment variable {env} not set!"
+            )
 
         self._api_key_ = _api_key.strip()
+
+        print_config("API key found in environment", env, newline=True)
 
     def get_key(self):
         """
         Returns a string containing the API key.
         """
         return "api_key=" + self._api_key_
-
-    def print_message(self):
-        """
-        Print the message to the console explaining the
-        API key.
-        """
-        print_config(*self.message, newline=True)
 
 
 def json_load(file: str) -> dict:
@@ -90,7 +85,7 @@ def validate_config(input_data: dict, schema: dict):
     """
     try:
         jsonschema.validate(instance=input_data, schema=schema)
-    except jsonschema.exceptions.ValidationError as e:
+    except ValidationError as e:
         raise ValueError(e)
 
     jsonschema_default.fill_from(schema=schema, target=input_data)
@@ -152,9 +147,7 @@ class Config:
         self.bus_data_url = options["bus_data_url"]
         print_config("Bus Data URL", self.bus_data_url, newline=False)
         api_key_env = options["api_key_env"]
-        api_key_filepath = os.path.abspath(options["api_key_file"])
-        self.api_key = APIKey(api_key_env, api_key_filepath)
-        self.api_key.print_message()
+        self.api_key = APIKey(api_key_env)
 
         # TODO Change database to data file when referring to an xml/json/csv file
         self.operator_database_filepath = os.path.abspath(
