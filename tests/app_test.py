@@ -1,11 +1,13 @@
 import json
-import pytest
-import polars as pl
 import re
-
 from io import StringIO
+
+import polars as pl
+import pytest
+
 from open_bus_api.__main__ import app
 from open_bus_api.functions import markdown_to_html
+
 from .analyse_xml import analyse_response
 
 
@@ -189,7 +191,7 @@ def test_operator_info():
 
     for match_num, match in enumerate(matches, start=1):
         for group_idx, group in enumerate(match.groups(), start=1):
-            assert group in expected_columns 
+            assert group in expected_columns
 
 
 stop_cases = [

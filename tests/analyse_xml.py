@@ -29,9 +29,7 @@ def fetch_schema(
         return schema
 
 
-def validate_xml(
-    xml_str: str, schema: xmlschema.XMLSchema | None = None, **kwargs
-) -> bool:
+def validate_xml(xml_str: str, schema: xmlschema.XMLSchema | None = None, **kwargs) -> bool:
     """
     Validates XML against a schema
 
@@ -56,7 +54,7 @@ def validate_xml(
     return True
 
 
-def generate_structure(tree: ElementTree, structure: dict):
+def generate_structure(tree, structure: dict):
     """
     Recursive function which searches through the `tree` and updates the structure
     dictionary with each nodes tag, its child, and counts the number of occurrences of each tag.
@@ -75,7 +73,7 @@ def generate_structure(tree: ElementTree, structure: dict):
         generate_structure(child, structure[tag])
 
 
-def get_structure(tree: ElementTree) -> dict:
+def get_structure(tree) -> dict:
     """
     Obtain the structure of an element tree in the form of a dictionary where repeated fields are counted.
 

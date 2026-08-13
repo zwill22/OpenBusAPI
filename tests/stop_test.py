@@ -1,6 +1,7 @@
-import open_bus_api.config
 import json
-from api_database import setup_database, fetch_stops
+
+import open_bus_api.config
+from api_database import fetch_stops, setup_database
 
 keys = [
     "ATCOCode",
